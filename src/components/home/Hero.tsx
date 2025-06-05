@@ -1,10 +1,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import smartify from './smartify.png'
 
 export default function Hero() {
   return (
-    <div className="relative   overflow-hidden">
+    <div className="relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0 bg-[url('/images/pattern.svg')] bg-repeat opacity-20" />
@@ -39,7 +38,7 @@ export default function Hero() {
           <div className="relative">
             <div className="relative w-full h-[300px] max-w-4xl mx-auto">
               <Image
-                src={smartify}
+                src="/images/hero-image.png"
                 alt="Smartify Products"
                 fill
                 className="object-contain scale-150"
