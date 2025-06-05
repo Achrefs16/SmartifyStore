@@ -1,0 +1,43 @@
+{
+  "common": {
+    "welcome": "Bienvenue sur SmartifyStore",
+    "search": "Rechercher",
+    "cart": "Panier",
+    "account": "Mon Compte",
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "logout": "Déconnexion"
+  },
+  "products": {
+    "title": "Nos Produits",
+    "addToCart": "Ajouter au panier",
+    "price": "Prix",
+    "quantity": "Quantité",
+    "description": "Description",
+    "categories": "Catégories",
+    "filters": "Filtres"
+  },
+  "cart": {
+    "title": "Votre Panier",
+    "empty": "Votre panier est vide",
+    "subtotal": "Sous-total",
+    "total": "Total",
+    "checkout": "Passer la commande",
+    "continueShopping": "Continuer les achats"
+  },
+  "admin": {
+    "dashboard": "Tableau de bord",
+    "products": "Gestion des produits",
+    "orders": "Commandes",
+    "customers": "Clients",
+    "analytics": "Analytique",
+    "settings": "Paramètres"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "rememberMe": "Se souvenir de moi"
+  }
+} 
