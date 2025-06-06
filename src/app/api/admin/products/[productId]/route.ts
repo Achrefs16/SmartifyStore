@@ -4,29 +4,32 @@ import connectDB from '@/lib/mongodb';
 import Product from '@/models/Product';
 import { authOptions } from '../../../auth/[...nextauth]/route';
 
+function extractProductId(request: Request): string | null {
+  const url = new URL(request.url);
+  const pathSegments = url.pathname.split('/');
+  const productId = pathSegments[pathSegments.length - 1];
+  return productId || null;
+}
+
 // GET single product
-export async function GET(
-  request: Request,
-  { params }: { params: { productId: string } }
-) {
+export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
 
     if (!session || session.user?.role !== 'admin') {
-      return NextResponse.json(
-        { error: 'Non autorisé' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
+    }
+
+    const productId = extractProductId(request);
+    if (!productId) {
+      return NextResponse.json({ error: 'ID de produit invalide' }, { status: 400 });
     }
 
     await connectDB();
-    const product = await Product.findById(params.productId);
+    const product = await Product.findById(productId);
 
     if (!product) {
-      return NextResponse.json(
-        { error: 'Produit non trouvé' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Produit non trouvé' }, { status: 404 });
     }
 
     return NextResponse.json(product);
@@ -40,33 +43,29 @@ export async function GET(
 }
 
 // PUT update product
-export async function PUT(
-  request: Request,
-  { params }: { params: { productId: string } }
-) {
+export async function PUT(request: Request) {
   try {
     const session = await getServerSession(authOptions);
 
     if (!session || session.user?.role !== 'admin') {
-      return NextResponse.json(
-        { error: 'Non autorisé' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
+    }
+
+    const productId = extractProductId(request);
+    if (!productId) {
+      return NextResponse.json({ error: 'ID de produit invalide' }, { status: 400 });
     }
 
     const body = await request.json();
     const { name, price, stock, category, image } = body;
 
     if (!name || !price || !stock || !category || !image) {
-      return NextResponse.json(
-        { error: 'Tous les champs sont requis' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Tous les champs sont requis' }, { status: 400 });
     }
 
     await connectDB();
     const product = await Product.findByIdAndUpdate(
-      params.productId,
+      productId,
       {
         name,
         price,
@@ -78,10 +77,7 @@ export async function PUT(
     );
 
     if (!product) {
-      return NextResponse.json(
-        { error: 'Produit non trouvé' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Produit non trouvé' }, { status: 404 });
     }
 
     return NextResponse.json(product);
@@ -95,28 +91,24 @@ export async function PUT(
 }
 
 // DELETE product
-export async function DELETE(
-  request: Request,
-  { params }: { params: { productId: string } }
-) {
+export async function DELETE(request: Request) {
   try {
     const session = await getServerSession(authOptions);
 
     if (!session || session.user?.role !== 'admin') {
-      return NextResponse.json(
-        { error: 'Non autorisé' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
+    }
+
+    const productId = extractProductId(request);
+    if (!productId) {
+      return NextResponse.json({ error: 'ID de produit invalide' }, { status: 400 });
     }
 
     await connectDB();
-    const product = await Product.findByIdAndDelete(params.productId);
+    const product = await Product.findByIdAndDelete(productId);
 
     if (!product) {
-      return NextResponse.json(
-        { error: 'Produit non trouvé' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Produit non trouvé' }, { status: 404 });
     }
 
     return NextResponse.json({ message: 'Produit supprimé avec succès' });
