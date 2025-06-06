@@ -409,105 +409,46 @@ export default function AdminDashboard() {
             <p className="text-blue-100">Gérez vos commandes, utilisateurs et produits</p>
           </div>
 
-          {/* Stats Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
-            <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
-              <div className="flex items-center">
-                <div className="p-3 rounded-full bg-blue-100 text-blue-600">
-                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                  </svg>
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-500">Commandes totales</p>
-                  <p className="text-lg font-semibold text-gray-900">{stats.totalOrders}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
-              <div className="flex items-center">
-                <div className="p-3 rounded-full bg-green-100 text-green-600">
-                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-500">Revenu total</p>
-                  <p className="text-lg font-semibold text-gray-900">{stats.totalRevenue.toFixed(2)} TND</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
-              <div className="flex items-center">
-                <div className="p-3 rounded-full bg-purple-100 text-purple-600">
-                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-500">Utilisateurs</p>
-                  <p className="text-lg font-semibold text-gray-900">{stats.totalUsers}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
-              <div className="flex items-center">
-                <div className="p-3 rounded-full bg-yellow-100 text-yellow-600">
-                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                  </svg>
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-500">Produits</p>
-                  <p className="text-lg font-semibold text-gray-900">{stats.totalProducts}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* Tabs */}
           <div className="border-b border-gray-200">
-            <nav className="flex -mb-px">
+            <nav className="-mb-px flex gap-4 ml-4 space-x-8">
               <button
                 onClick={() => setActiveTab('overview')}
-                className={`px-6 py-4 text-center border-b-2 font-medium text-sm ${
+                className={`${
                   activeTab === 'overview'
-                    ? 'border-blue-500 text-blue-600'
+                    ? 'border-[#fc6f03] text-[#fc6f03]'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               >
                 Vue d'ensemble
               </button>
               <button
                 onClick={() => setActiveTab('orders')}
-                className={`px-6 py-4 text-center border-b-2 font-medium text-sm ${
+                className={`${
                   activeTab === 'orders'
-                    ? 'border-blue-500 text-blue-600'
+                    ? 'border-[#fc6f03] text-[#fc6f03]'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               >
                 Commandes
               </button>
               <button
                 onClick={() => setActiveTab('users')}
-                className={`px-6 py-4 text-center border-b-2 font-medium text-sm ${
+                className={`${
                   activeTab === 'users'
-                    ? 'border-blue-500 text-blue-600'
+                    ? 'border-[#fc6f03] text-[#fc6f03]'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               >
                 Utilisateurs
               </button>
               <button
                 onClick={() => setActiveTab('products')}
-                className={`px-6 py-4 text-center border-b-2 font-medium text-sm ${
+                className={`${
                   activeTab === 'products'
-                    ? 'border-blue-500 text-blue-600'
+                    ? 'border-[#fc6f03] text-[#fc6f03]'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               >
                 Produits
               </button>
@@ -518,98 +459,165 @@ export default function AdminDashboard() {
           <div className="p-6">
             {activeTab === 'overview' && (
               <div className="space-y-6">
-                {/* Revenue Overview */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
+                {/* Stats Overview */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="bg-white rounded-lg shadow p-6">
+                    <div className="flex items-center">
+                      <div className="p-3 rounded-full bg-orange-100 text-[#fc6f03]">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                        </svg>
+                      </div>
+                      <div className="ml-4">
+                        <h3 className="text-lg font-medium text-gray-900">Commandes</h3>
+                        <p className="text-2xl font-semibold text-gray-900">{stats.totalOrders}</p>
+                        <p className="text-sm text-gray-500">Total des commandes</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-white rounded-lg shadow p-6">
                     <div className="flex items-center">
                       <div className="p-3 rounded-full bg-green-100 text-green-600">
-                        <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </div>
                       <div className="ml-4">
-                        <p className="text-sm font-medium text-gray-500">Revenu total</p>
-                        <p className="text-lg font-semibold text-gray-900">{stats.totalRevenue.toFixed(2)} TND</p>
+                        <h3 className="text-lg font-medium text-gray-900">Revenus</h3>
+                        <p className="text-2xl font-semibold text-gray-900">{stats.totalRevenue.toFixed(2)} DT</p>
+                        <p className="text-sm text-gray-500">Revenus totaux</p>
                       </div>
                     </div>
                   </div>
-
-                  <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
+                  <div className="bg-white rounded-lg shadow p-6">
                     <div className="flex items-center">
                       <div className="p-3 rounded-full bg-blue-100 text-blue-600">
-                        <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg>
                       </div>
                       <div className="ml-4">
-                        <p className="text-sm font-medium text-gray-500">Revenu moyen par commande</p>
-                        <p className="text-lg font-semibold text-gray-900">
-                          {stats.totalOrders > 0 
-                            ? (stats.totalRevenue / stats.totalOrders).toFixed(2) 
-                            : '0.00'} TND
-                        </p>
+                        <h3 className="text-lg font-medium text-gray-900">Utilisateurs</h3>
+                        <p className="text-2xl font-semibold text-gray-900">{stats.totalUsers}</p>
+                        <p className="text-sm text-gray-500">Utilisateurs inscrits</p>
                       </div>
                     </div>
                   </div>
-
-                  <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
+                  <div className="bg-white rounded-lg shadow p-6">
                     <div className="flex items-center">
                       <div className="p-3 rounded-full bg-purple-100 text-purple-600">
-                        <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                         </svg>
                       </div>
                       <div className="ml-4">
-                        <p className="text-sm font-medium text-gray-500">Commandes du jour</p>
-                        <p className="text-lg font-semibold text-gray-900">
-                          {orders.filter(order => {
-                            const orderDate = new Date(order.createdAt);
-                            const today = new Date();
-                            return orderDate.toDateString() === today.toDateString();
-                          }).length}
-                        </p>
+                        <h3 className="text-lg font-medium text-gray-900">Produits</h3>
+                        <p className="text-2xl font-semibold text-gray-900">{stats.totalProducts}</p>
+                        <p className="text-sm text-gray-500">Produits en stock</p>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Commandes récentes</h2>
-                <div className="bg-white shadow overflow-hidden sm:rounded-md">
-                  <ul className="divide-y divide-gray-200">
-                    {orders.slice(0, 5).map((order) => (
-                      <li key={order._id}>
-                        <div className="px-4 py-4 sm:px-6">
+                {/* Recent Orders and Analytics */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Recent Orders */}
+                  <div className="bg-white rounded-lg shadow">
+                    <div className="px-6 py-4 border-b border-gray-200">
+                      <h3 className="text-lg font-medium text-gray-900">Commandes récentes</h3>
+                    </div>
+                    <div className="divide-y divide-gray-200">
+                      {orders.slice(0, 5).map((order) => (
+                        <div key={order._id} className="p-6 hover:bg-gray-50">
                           <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                              <p className="text-sm font-medium text-blue-600 truncate">
-                                Commande #{order._id}
-                              </p>
-                              <p className="ml-2 flex-shrink-0 inline-block px-2 py-0.5 text-xs font-medium rounded-full bg-green-100 text-green-800">
-                                {order.status}
-                              </p>
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">Commande #{order._id.slice(-6)}</p>
+                              <p className="text-sm text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</p>
                             </div>
-                            <div className="ml-2 flex-shrink-0 flex">
-                              <p className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                {order.totalPrice.toFixed(2)} TND
-                              </p>
-                            </div>
-                          </div>
-                          <div className="mt-2 sm:flex sm:justify-between">
-                            <div className="sm:flex">
-                              <p className="flex items-center text-sm text-gray-500">
-                                {order.shippingAddress.fullName}
-                              </p>
-                            </div>
-                            <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                              <p>
-                                {new Date(order.createdAt).toLocaleDateString()}
-                              </p>
+                            <div className="flex items-center space-x-2">
+                              <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(order.status)}`}>
+                                {STATUS_LABELS[order.status as keyof typeof STATUS_LABELS]}
+                              </span>
+                              <span className="text-sm font-medium text-gray-900">{order.totalPrice.toFixed(2)} DT</span>
                             </div>
                           </div>
                         </div>
-                      </li>
-                    ))}
-                  </ul>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Product Inventory Status */}
+                  <div className="bg-white rounded-lg shadow">
+                    <div className="px-6 py-4 border-b border-gray-200">
+                      <h3 className="text-lg font-medium text-gray-900">État des stocks</h3>
+                    </div>
+                    <div className="divide-y divide-gray-200">
+                      {products
+                        .filter(product => product.stock < 10)
+                        .slice(0, 5)
+                        .map((product) => (
+                          <div key={product._id} className="p-6 hover:bg-gray-50">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center space-x-3">
+                                <div className="flex-shrink-0 h-10 w-10 relative">
+                                  <Image
+                                    src={product.image}
+                                    alt={product.name}
+                                    fill
+                                    className="rounded-md object-cover"
+                                  />
+                                </div>
+                                <div>
+                                  <p className="text-sm font-medium text-gray-900">{product.name}</p>
+                                  <p className="text-sm text-gray-500">Stock: {product.stock}</p>
+                                </div>
+                              </div>
+                              <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                product.stock === 0 ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
+                              }`}>
+                                {product.stock === 0 ? 'Rupture de stock' : 'Stock faible'}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sales Analytics */}
+                <div className="bg-white rounded-lg shadow">
+                  <div className="px-6 py-4 border-b border-gray-200">
+                    <h3 className="text-lg font-medium text-gray-900">Analytique des ventes</h3>
+                  </div>
+                  <div className="p-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="bg-gray-50 rounded-lg p-4">
+                        <h4 className="text-sm font-medium text-gray-500">Commandes aujourd'hui</h4>
+                        <p className="mt-2 text-2xl font-semibold text-gray-900">
+                          {orders.filter(order => 
+                            new Date(order.createdAt).toDateString() === new Date().toDateString()
+                          ).length}
+                        </p>
+                      </div>
+                      <div className="bg-gray-50 rounded-lg p-4">
+                        <h4 className="text-sm font-medium text-gray-500">Revenus aujourd'hui</h4>
+                        <p className="mt-2 text-2xl font-semibold text-gray-900">
+                          {orders
+                            .filter(order => 
+                              new Date(order.createdAt).toDateString() === new Date().toDateString()
+                            )
+                            .reduce((sum, order) => sum + order.totalPrice, 0)
+                            .toFixed(2)} DT
+                        </p>
+                      </div>
+                      <div className="bg-gray-50 rounded-lg p-4">
+                        <h4 className="text-sm font-medium text-gray-500">Panier moyen</h4>
+                        <p className="mt-2 text-2xl font-semibold text-gray-900">
+                          {(stats.totalRevenue / (stats.totalOrders || 1)).toFixed(2)} DT
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}

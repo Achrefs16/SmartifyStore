@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { signOut } from 'next-auth/react';
 import {
   HomeIcon,
   ShoppingBagIcon,
@@ -12,6 +11,7 @@ import {
   Cog6ToothIcon,
   ArrowLeftOnRectangleIcon,
 } from '@heroicons/react/24/outline';
+import { signOut } from 'next-auth/react';
 
 const navigation = [
   { name: 'Tableau de bord', href: '/admin', icon: HomeIcon },
@@ -31,15 +31,7 @@ export default function AdminLayout({
   const router = useRouter();
 
   const handleLogout = async () => {
-    try {
-      await signOut({ 
-        redirect: false,
-        callbackUrl: '/'
-      });
-      router.push('/');
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
+    await signOut({ redirect: true, callbackUrl: '/' });
   };
 
   return (
@@ -79,7 +71,7 @@ export default function AdminLayout({
           <div className="p-4 border-t border-slate-800">
             <button
               onClick={handleLogout}
-              className="flex items-center w-full px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white rounded-md transition-colors"
+              className="flex items-center w-full px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white rounded-md"
             >
               <ArrowLeftOnRectangleIcon className="w-5 h-5 mr-3" />
               Déconnexion

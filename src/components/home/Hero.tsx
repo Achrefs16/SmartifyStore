@@ -38,7 +38,7 @@ export default function Hero() {
           <div className="relative">
             <div className="relative w-full h-[300px] max-w-4xl mx-auto">
               <Image
-                src="/images/hero-image.png"
+                src="/images/hero.png"
                 alt="Smartify Products"
                 fill
                 className="object-contain scale-150"
