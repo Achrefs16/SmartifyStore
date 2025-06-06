@@ -71,17 +71,17 @@ export default function CartPage() {
                   <div className="flex items-center border border-gray-300 rounded-lg">
                     <button
                       onClick={() => updateQuantity(item._id, item.quantity - 1)}
-                      className="px-3 py-1 text-gray-600 hover:bg-gray-100"
+                      className="px-2 sm:px-3 py-0.5 sm:py-1 text-gray-600 hover:bg-gray-100 text-sm sm:text-base"
                       disabled={item.quantity <= 1}
                     >
                       -
                     </button>
-                    <span className="px-3 py-1 text-gray-900">
+                    <span className="px-2 sm:px-3 py-0.5 sm:py-1 text-gray-900 text-sm sm:text-base">
                       {item.quantity}
                     </span>
                     <button
                       onClick={() => updateQuantity(item._id, item.quantity + 1)}
-                      className="px-3 py-1 text-gray-600 hover:bg-gray-100"
+                      className="px-2 sm:px-3 py-0.5 sm:py-1 text-gray-600 hover:bg-gray-100 text-sm sm:text-base"
                     >
                       +
                     </button>
