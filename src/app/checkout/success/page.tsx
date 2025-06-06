@@ -129,13 +129,13 @@ export default function CheckoutSuccessPage() {
                       {order.items.map((item, index) => (
                         <div key={index} className="flex justify-between items-center">
                           <span className="text-gray-600">{item.name} x {item.quantity}</span>
-                          <span className="font-medium">{item.price.toFixed(2)} TND</span>
+                          <span className="font-medium">{parseFloat(item.price.toFixed(2))} TND</span>
                         </div>
                       ))}
                       <div className="border-t border-gray-200 pt-3 mt-3">
                         <div className="flex justify-between items-center font-semibold">
                           <span>Total</span>
-                          <span className="text-lg">{order.totalPrice.toFixed(2)} TND</span>
+                          <span className="text-lg">{parseFloat(order.totalPrice.toFixed(2))} TND</span>
                         </div>
                       </div>
                     </div>

@@ -166,7 +166,7 @@ export default function CheckoutPage() {
                       <p className="mt-1 text-sm text-gray-500">Quantité: {item.quantity}</p>
                     </div>
                     <p className="text-base font-medium text-gray-900">
-                      {(item.price * item.quantity).toFixed(3)} DT
+                      {parseFloat((item.price * item.quantity).toFixed(3))} DT
                     </p>
                   </div>
                 ))}
@@ -175,12 +175,12 @@ export default function CheckoutPage() {
               <div className="mt-6 space-y-4">
                 <div className="flex justify-between text-base font-medium text-gray-900">
                   <p>Sous-total</p>
-                  <p>{totalPrice.toFixed(3)} DT</p>
+                  <p>{parseFloat(totalPrice.toFixed(3))} DT</p>
                 </div>
                 <div className="border-t border-gray-200 pt-4">
                   <div className="flex justify-between text-lg font-bold text-gray-900">
                     <p>Total</p>
-                    <p>{totalPrice.toFixed(3)} DT</p>
+                    <p>{parseFloat(totalPrice.toFixed(3))} DT</p>
                   </div>
                 </div>
               </div>

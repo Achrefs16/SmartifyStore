@@ -85,7 +85,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         <div className="flex items-center justify-between">
           <span className="text-base sm:text-lg font-bold text-gray-900">
-            {product.price.toFixed(3)} DT
+            {parseFloat(product.price.toFixed(3))} DT
           </span>
           <button
             onClick={handleAddToCart}

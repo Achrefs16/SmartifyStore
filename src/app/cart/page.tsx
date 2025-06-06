@@ -64,7 +64,7 @@ export default function CartPage() {
                   <h3 className="text-base sm:text-lg font-medium text-gray-900">
                     {item.name}
                   </h3>
-                  <p className="text-sm sm:text-base text-gray-500">{item.price.toFixed(3)} DT</p>
+                  <p className="text-sm sm:text-base text-gray-500">{parseFloat(item.price.toFixed(3))} DT</p>
                 </div>
 
                 <div className="flex items-center gap-4">
@@ -109,7 +109,7 @@ export default function CartPage() {
             <div className="space-y-4">
               <div className="flex justify-between text-gray-600">
                 <span>Sous-total</span>
-                <span>{totalPrice.toFixed(3)} DT</span>
+                <span>{parseFloat(totalPrice.toFixed(3))} DT</span>
               </div>
               <div className="flex justify-between text-gray-600">
                 <span>Livraison</span>
@@ -118,7 +118,7 @@ export default function CartPage() {
               <div className="border-t border-gray-200 pt-4">
                 <div className="flex justify-between text-lg font-medium text-gray-900">
                   <span>Total</span>
-                  <span>{totalPrice.toFixed(3)} DT</span>
+                  <span>{parseFloat(totalPrice.toFixed(3))} DT</span>
                 </div>
               </div>
             </div>

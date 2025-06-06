@@ -487,7 +487,7 @@ export default function AdminDashboard() {
                         <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(order.status)}`}>
                           {STATUS_LABELS[order.status as keyof typeof STATUS_LABELS]}
                         </span>
-                        <span className="text-sm font-medium text-gray-900">{order.totalPrice.toFixed(2)} DT</span>
+                        <span className="text-sm font-medium text-gray-900">{parseFloat(order.totalPrice.toFixed(2))} TND</span>
                       </div>
                     </div>
                   </div>
@@ -604,7 +604,7 @@ export default function AdminDashboard() {
                       </div>
                       <div className="flex items-center space-x-2">
                         <p className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                          {order.totalPrice.toFixed(2)} TND
+                          {parseFloat(order.totalPrice.toFixed(2))} TND
                         </p>
                         <button
                           onClick={() => handleOrderClick(order)}
@@ -765,7 +765,7 @@ export default function AdminDashboard() {
                   <p className="mt-1 text-sm text-gray-500">{product.category}</p>
                   <div className="mt-2 flex justify-between items-center">
                     <p className="text-lg font-semibold text-gray-900">
-                      {product.price.toFixed(2)} TND
+                      {parseFloat(product.price.toFixed(2))} TND
                     </p>
                     <p className="text-sm text-gray-500">
                       Stock: {product.stock}
@@ -1066,13 +1066,13 @@ export default function AdminDashboard() {
                               <p className="font-medium text-gray-900">{item.name}</p>
                               <p className="text-sm text-gray-500">Quantité: {item.quantity}</p>
                             </div>
-                            <p className="font-medium text-gray-900">{item.price.toFixed(2)} TND</p>
+                            <p className="font-medium text-gray-900">{parseFloat(item.price.toFixed(2))} TND</p>
                           </div>
                         ))}
                         <div className="pt-4 border-t border-gray-200">
                           <div className="flex justify-between items-center">
                             <p className="text-lg font-medium text-gray-900">Total</p>
-                            <p className="text-xl font-bold text-gray-900">{selectedOrder.totalPrice.toFixed(2)} TND</p>
+                            <p className="text-xl font-bold text-gray-900">{parseFloat(selectedOrder.totalPrice.toFixed(2))} TND</p>
                           </div>
                         </div>
                       </div>

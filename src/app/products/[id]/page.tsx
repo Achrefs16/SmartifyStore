@@ -124,7 +124,7 @@ export default function ProductPage() {
 
           <div className="mb-6">
             <span className="text-3xl font-bold text-gray-900">
-              {product.price.toFixed(2)} DT
+              {parseFloat(product.price.toFixed(2))} DT
             </span>
             {product.stock > 0 && product.stock <= 5 && (
               <p className="mt-2 text-sm text-orange-600">

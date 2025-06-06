@@ -585,7 +585,7 @@ export default function ProfilePage() {
                                   </div>
                                 </div>
                                 <p className="text-sm font-medium text-gray-900">
-                                  {item.price.toFixed(2)} TND
+                                  {parseFloat(item.price.toFixed(2))} TND
                                 </p>
                               </div>
                             ))}
@@ -593,7 +593,7 @@ export default function ProfilePage() {
                               <div className="flex justify-between items-center">
                                 <p className="text-sm sm:text-base font-medium text-gray-900">Total</p>
                                 <p className="text-base sm:text-lg font-bold text-gray-900">
-                                  {order.totalPrice.toFixed(2)} TND
+                                  {parseFloat(order.totalPrice.toFixed(2))} TND
                                 </p>
                               </div>
                             </div>
