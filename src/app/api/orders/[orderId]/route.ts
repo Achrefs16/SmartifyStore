@@ -14,21 +14,14 @@ function extractOrderId(request: Request): string | null {
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-
-    if (!session) {
-      return NextResponse.json(
-        { error: 'Non autorisé' },
-        { status: 401 }
-      );
-    }
-
     const orderId = extractOrderId(request);
+    
     if (!orderId) {
       return NextResponse.json({ error: 'ID de commande invalide' }, { status: 400 });
     }
 
     await connectDB();
-    const order = await Order.findById(orderId).populate('user', 'name email');
+    const order = await Order.findById(orderId);
 
     if (!order) {
       return NextResponse.json(
@@ -37,15 +30,44 @@ export async function GET(request: Request) {
       );
     }
 
-    // Vérifier si l'utilisateur est autorisé à voir cette commande
-    if (order.user._id.toString() !== session.user.id && session.user.role !== 'admin') {
+    // For checkout success page, allow access without authentication
+    if (!session?.user?.id) {
+      // Return basic order data without user information
+      const orderData = {
+        _id: order._id,
+        items: order.items,
+        totalPrice: order.totalPrice,
+        shippingAddress: order.shippingAddress,
+        status: order.status,
+        createdAt: order.createdAt,
+      };
+      return NextResponse.json(orderData);
+    }
+
+    // If user is authenticated, check authorization
+    const isAuthorized = 
+      order.userId && 
+      (order.userId.toString() === session.user.id || session.user.role === 'admin');
+
+    if (!isAuthorized) {
       return NextResponse.json(
         { error: 'Non autorisé à voir cette commande' },
         { status: 403 }
       );
     }
 
-    return NextResponse.json(order);
+    // Return full order data for authenticated users
+    const orderData = {
+      _id: order._id,
+      items: order.items,
+      totalPrice: order.totalPrice,
+      shippingAddress: order.shippingAddress,
+      status: order.status,
+      createdAt: order.createdAt,
+      userId: order.userId
+    };
+
+    return NextResponse.json(orderData);
   } catch (error) {
     console.error('Error fetching order:', error);
     return NextResponse.json(
