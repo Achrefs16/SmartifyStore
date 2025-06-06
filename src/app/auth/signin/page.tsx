@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 
 export default function SignIn() {
   const router = useRouter();
@@ -36,7 +35,7 @@ export default function SignIn() {
 
       router.push('/');
       router.refresh();
-    } catch (error) {
+    } catch {
       setError('Une erreur est survenue');
     } finally {
       setLoading(false);
@@ -46,7 +45,7 @@ export default function SignIn() {
   const handleGoogleSignIn = async () => {
     try {
       await signIn('google', { callbackUrl: '/' });
-    } catch (error) {
+    } catch {
       setError('Une erreur est survenue lors de la connexion avec Google');
     }
   };

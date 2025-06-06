@@ -13,7 +13,7 @@ export default function Hero() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="text-center lg:text-left relative z-10 bg-white/80 backdrop-blur-sm p-6 rounded-xl">
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-              Découvrez l'Innovation avec{' '}
+              Découvrez l&apos;Innovation avec{' '}
               <span className="text-[#fc6f03]">Smartify Store</span>
             </h1>
             <p className="mt-6 text-lg sm:text-xl text-gray-800 max-w-2xl mx-auto lg:mx-0">

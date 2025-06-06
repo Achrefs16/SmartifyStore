@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import {
   HomeIcon,
   ShoppingBagIcon,
@@ -26,9 +25,7 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
 
   const handleLogout = async () => {
     await signOut({ redirect: true, callbackUrl: '/' });

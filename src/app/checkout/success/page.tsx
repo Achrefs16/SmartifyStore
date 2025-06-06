@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 
@@ -29,7 +28,6 @@ interface Order {
 
 export default function CheckoutSuccessPage() {
   const searchParams = useSearchParams();
-  const { data: session } = useSession();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -82,7 +80,7 @@ export default function CheckoutSuccessPage() {
               href="/"
               className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200"
             >
-              Retour à l'accueil
+              Retour à l&apos;accueil
             </Link>
           </div>
         </div>
@@ -182,7 +180,7 @@ export default function CheckoutSuccessPage() {
                     href="/"
                     className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200"
                   >
-                    Retour à l'accueil
+                    Retour à l&apos;accueil
                   </Link>
                   <Link
                     href="/account/profile"

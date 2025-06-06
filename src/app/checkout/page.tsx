@@ -20,7 +20,6 @@ export default function CheckoutPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { items, totalItems, totalPrice, clearCart } = useCart();
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -89,10 +88,11 @@ export default function CheckoutPage() {
         position: 'top-center',
       });
       router.push(`/checkout/success?orderId=${data.orderId}`);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error placing order:', error);
-      setError(error.message || 'Une erreur est survenue');
-      toast.error(error.message || 'Une erreur est survenue', {
+      const errorMessage = error instanceof Error ? error.message : 'Une erreur est survenue';
+      setError(errorMessage);
+      toast.error(errorMessage, {
         duration: 4000,
         position: 'top-center',
       });

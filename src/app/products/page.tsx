@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import ProductGrid from '@/components/products/ProductGrid';
-import { FunnelIcon, AdjustmentsHorizontalIcon, XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
+import { FunnelIcon, AdjustmentsHorizontalIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { categories } from '@/config/categories';
 
 const sortOptions = [

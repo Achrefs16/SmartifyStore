@@ -49,8 +49,8 @@ export default function SignUp() {
       }
 
       router.push('/auth/signin?registered=true');
-    } catch (error) {
-      setError(error instanceof Error ? error.message : 'Une erreur est survenue');
+    } catch {
+      setError('Une erreur est survenue');
     } finally {
       setLoading(false);
     }
@@ -59,7 +59,7 @@ export default function SignUp() {
   const handleGoogleSignIn = async () => {
     try {
       await signIn('google', { callbackUrl: '/' });
-    } catch (error) {
+    } catch {
       setError('Une erreur est survenue lors de la connexion avec Google');
     }
   };

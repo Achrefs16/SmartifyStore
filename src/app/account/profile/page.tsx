@@ -528,7 +528,7 @@ export default function ProfilePage() {
                       </svg>
                     </div>
                     <h3 className="text-lg font-medium text-gray-900 mb-2">Aucune commande</h3>
-                    <p className="text-gray-600">Vous n'avez pas encore passé de commande.</p>
+                    <p className="text-gray-600">Vous n&apos;avez pas encore passé de commande.</p>
                   </div>
                 ) : (
                   <div className="space-y-6">

@@ -107,7 +107,7 @@ export default function ProductGrid({
           Aucun produit trouvé
         </h2>
         <p className="text-gray-600">
-          Désolé, nous n'avons pas trouvé de produits correspondant à vos critères.
+          Désolé, nous n&apos;avons pas trouvé de produits correspondant à vos critères.
         </p>
       </div>
     );

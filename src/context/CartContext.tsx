@@ -10,11 +10,19 @@ interface CartItem {
   quantity: number;
 }
 
+interface Product {
+  _id: string;
+  name: string;
+  price: number;
+  image: string;
+  quantity?: number;
+}
+
 interface CartContextType {
   items: CartItem[];
   totalItems: number;
   totalPrice: number;
-  addToCart: (product: any) => void;
+  addToCart: (product: Product) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -52,7 +60,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setTotalPrice(price);
   };
 
-  const addToCart = (product: any) => {
+  const addToCart = (product: Product) => {
     setItems((currentItems) => {
       const existingItem = currentItems.find((item) => item._id === product._id);
       let newItems;

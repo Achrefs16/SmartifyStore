@@ -49,10 +49,10 @@ export default function AdminUsersPage() {
         text: 'Utilisateur mis à jour avec succès',
       });
       setEmail('');
-    } catch (error: any) {
+    } catch (error: unknown) {
       setMessage({
         type: 'error',
-        text: error.message,
+        text: error instanceof Error ? error.message : 'Une erreur est survenue',
       });
     } finally {
       setLoading(false);
@@ -73,7 +73,7 @@ export default function AdminUsersPage() {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
               >
-                Email de l'utilisateur
+                Email de l&apos;utilisateur
               </label>
               <div className="mt-1">
                 <input

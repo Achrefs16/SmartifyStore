@@ -82,7 +82,7 @@ export default function ProductPage() {
             {error || 'Produit non trouvé'}
           </h2>
           <p className="text-gray-600">
-            Désolé, nous n'avons pas pu charger les détails du produit.
+            Désolé, nous n&apos;avons pas pu charger les détails du produit.
           </p>
         </div>
       </div>
