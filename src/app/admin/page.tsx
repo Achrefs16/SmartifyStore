@@ -104,7 +104,7 @@ export default function AdminDashboard() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState({
     totalOrders: 0,
     totalRevenue: 0,
@@ -326,7 +326,7 @@ export default function AdminDashboard() {
         console.error('Error fetching data:', error);
         toast.error('Erreur lors de la récupération des données');
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
@@ -342,7 +342,7 @@ export default function AdminDashboard() {
     fetchData();
   }, [session, status, router]);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <div className="text-center">
