@@ -537,18 +537,17 @@ export default function ProfilePage() {
                         key={order._id}
                         className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200"
                       >
-                        <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 bg-gray-50">
                           <div className="flex justify-between items-center">
-                            <div className="flex items-center space-x-4">
+                            <div className="flex items-center space-x-3 sm:space-x-4">
                               <div className="flex-shrink-0">
-                                <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                                  <svg className="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                  <svg className="h-4 w-4 sm:h-6 sm:w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                                   </svg>
                                 </div>
                               </div>
                               <div>
-                                <p className="text-sm font-medium text-gray-900">Commande #{order._id}</p>
                                 <p className="text-sm text-gray-500">
                                   {new Date(order.createdAt).toLocaleDateString('fr-FR', {
                                     year: 'numeric',
@@ -561,20 +560,20 @@ export default function ProfilePage() {
                               </div>
                             </div>
                             <div className="flex items-center space-x-2">
-                              <div className={`flex items-center space-x-2 px-3 py-1.5 rounded-full ${STATUS_STYLES[order.status as keyof typeof STATUS_STYLES]?.bg} ${STATUS_STYLES[order.status as keyof typeof STATUS_STYLES]?.text}`}>
+                              <div className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full ${STATUS_STYLES[order.status as keyof typeof STATUS_STYLES]?.bg} ${STATUS_STYLES[order.status as keyof typeof STATUS_STYLES]?.text}`}>
                                 {STATUS_STYLES[order.status as keyof typeof STATUS_STYLES]?.icon}
-                                <span className="text-sm font-medium">
+                                <span className="text-xs sm:text-sm font-medium">
                                   {STATUS_STYLES[order.status as keyof typeof STATUS_STYLES]?.label}
                                 </span>
                               </div>
                             </div>
                           </div>
                         </div>
-                        <div className="px-6 py-4">
-                          <div className="space-y-4">
+                        <div className="px-4 sm:px-6 py-3 sm:py-4">
+                          <div className="space-y-3 sm:space-y-4">
                             {order.items.map((item, index) => (
-                              <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
-                                <div className="flex items-center space-x-4">
+                              <div key={index} className="flex justify-between items-center py-1 sm:py-2 border-b border-gray-100 last:border-0">
+                                <div className="flex items-center space-x-3 sm:space-x-4">
                                   <div className="flex-shrink-0 h-16 w-16 sm:h-24 sm:w-24 rounded-lg bg-gray-100 flex items-center justify-center">
                                     <svg className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
@@ -582,7 +581,7 @@ export default function ProfilePage() {
                                   </div>
                                   <div>
                                     <p className="text-sm font-medium text-gray-900">{item.name}</p>
-                                    <p className="text-sm text-gray-500">Quantité: {item.quantity}</p>
+                                    <p className="text-xs sm:text-sm text-gray-500">Quantité: {item.quantity}</p>
                                   </div>
                                 </div>
                                 <p className="text-sm font-medium text-gray-900">
@@ -590,10 +589,10 @@ export default function ProfilePage() {
                                 </p>
                               </div>
                             ))}
-                            <div className="border-t border-gray-200 pt-4">
+                            <div className="border-t border-gray-200 pt-3 sm:pt-4">
                               <div className="flex justify-between items-center">
-                                <p className="text-base font-medium text-gray-900">Total</p>
-                                <p className="text-lg font-bold text-gray-900">
+                                <p className="text-sm sm:text-base font-medium text-gray-900">Total</p>
+                                <p className="text-base sm:text-lg font-bold text-gray-900">
                                   {order.totalPrice.toFixed(2)} TND
                                 </p>
                               </div>

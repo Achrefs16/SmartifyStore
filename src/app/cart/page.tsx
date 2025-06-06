@@ -51,7 +51,7 @@ export default function CartPage() {
                 key={item._id}
                 className="flex items-center gap-4 bg-white p-4 rounded-lg shadow-sm"
               >
-                <div className="relative w-24 h-24 flex-shrink-0">
+                <div className="relative w-16 h-16 sm:w-24 sm:h-24 flex-shrink-0">
                   <Image
                     src={item.image}
                     alt={item.name}
@@ -61,10 +61,10 @@ export default function CartPage() {
                 </div>
 
                 <div className="flex-grow">
-                  <h3 className="text-lg font-medium text-gray-900">
+                  <h3 className="text-base sm:text-lg font-medium text-gray-900">
                     {item.name}
                   </h3>
-                  <p className="text-gray-500">{item.price.toFixed(3)} DT</p>
+                  <p className="text-sm sm:text-base text-gray-500">{item.price.toFixed(3)} DT</p>
                 </div>
 
                 <div className="flex items-center gap-4">
