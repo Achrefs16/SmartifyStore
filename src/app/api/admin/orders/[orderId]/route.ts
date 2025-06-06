@@ -17,15 +17,9 @@ const ORDER_STATUSES = {
   ECHOUEE: 'echouee'                  // Paiement échoué ou autres problèmes
 };
 
-type RouteContext = {
-  params: {
-    orderId: string;
-  };
-};
-
 export async function DELETE(
   request: Request,
-  context: RouteContext
+  { params }: { params: { orderId: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -39,7 +33,7 @@ export async function DELETE(
 
     await connectDB();
 
-    const order = await Order.findByIdAndDelete(context.params.orderId);
+    const order = await Order.findByIdAndDelete(params.orderId);
 
     if (!order) {
       return NextResponse.json(
@@ -60,7 +54,7 @@ export async function DELETE(
 
 export async function PATCH(
   request: Request,
-  context: RouteContext
+  { params }: { params: { orderId: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -84,7 +78,7 @@ export async function PATCH(
     await connectDB();
 
     const order = await Order.findByIdAndUpdate(
-      context.params.orderId,
+      params.orderId,
       { 
         status,
         $push: {
