@@ -293,7 +293,7 @@ export default function AdminDashboard() {
         const [ordersRes, usersRes, productsRes] = await Promise.all([
           fetch('/api/admin/orders'),
           fetch('/api/admin/users'),
-          fetch('/api/admin/products')
+          fetch('/api/admin/products'),
         ]);
 
         if (!ordersRes.ok || !usersRes.ok || !productsRes.ok) {
@@ -303,7 +303,7 @@ export default function AdminDashboard() {
         const [ordersData, usersData, productsData] = await Promise.all([
           ordersRes.json(),
           usersRes.json(),
-          productsRes.json()
+          productsRes.json(),
         ]);
 
         setOrders(ordersData);
@@ -311,12 +311,16 @@ export default function AdminDashboard() {
         setProducts(productsData);
 
         // Calculate stats
+        const totalOrders = ordersData.length;
         const totalRevenue = ordersData.reduce((sum: number, order: Order) => sum + order.totalPrice, 0);
+        const totalUsers = usersData.length;
+        const totalProducts = productsData.length;
+
         setStats({
-          totalOrders: ordersData.length,
+          totalOrders,
           totalRevenue,
-          totalUsers: usersData.length,
-          totalProducts: productsData.length,
+          totalUsers,
+          totalProducts,
         });
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -326,13 +330,25 @@ export default function AdminDashboard() {
       }
     };
 
-    fetchData();
-  }, []);
+    if (status === 'loading') {
+      return;
+    }
 
-  if (status === 'loading') {
+    if (!session || session.user.role !== 'admin') {
+      router.push('/');
+      return;
+    }
+
+    fetchData();
+  }, [session, status, router]);
+
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0f172a]"></div>
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#fc6f03] mx-auto"></div>
+          <p className="mt-4 text-gray-600">Chargement...</p>
+        </div>
       </div>
     );
   }
