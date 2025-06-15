@@ -158,7 +158,7 @@ export default function CheckoutPage() {
                 </h3>
                 <div className="mt-2 text-sm text-blue-700">
                   <p>
-                    En créant un compte, vous pourrez suivre l'état de vos commandes et accéder à votre historique d'achats.
+                    En créant un compte, vous pourrez suivre l&apos;état de vos commandes et accéder à votre historique d&apos;achats.
                     <Link href="/auth/register" className="font-medium underline hover:text-blue-600 ml-1">
                       Créer un compte
                     </Link>

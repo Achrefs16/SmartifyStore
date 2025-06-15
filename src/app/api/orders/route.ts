@@ -4,6 +4,14 @@ import { authOptions } from '@/lib/auth';
 import Order from '@/models/Order';
 import connectDB from '@/lib/mongodb';
 
+interface OrderItem {
+  _id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  selectedColor?: string;
+}
+
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -67,7 +75,7 @@ export async function POST(request: Request) {
 
     const orderData = {
       userId: session?.user?.id || null,
-      items: body.items.map((item: any) => ({
+      items: body.items.map((item: OrderItem) => ({
         productId: item._id,
         name: item.name,
         price: item.price,
@@ -101,7 +109,7 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 
