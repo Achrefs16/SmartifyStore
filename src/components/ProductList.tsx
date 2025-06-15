@@ -2,6 +2,12 @@
 import { useEffect, useState } from 'react';
 import ProductCard from './ProductCard';
 
+interface ColorVariation {
+  color: string;
+  stock: number;
+  image?: string;
+}
+
 interface Product {
   _id: string;
   name: string;
@@ -10,6 +16,8 @@ interface Product {
   category: string;
   description: string;
   stock: number;
+  hasColorVariations: boolean;
+  colorVariations: ColorVariation[];
 }
 
 export default function ProductList() {
