@@ -217,7 +217,7 @@ export default function ProductPage() {
           {product.hasColorVariations && product.colorVariations && (
             <div className="mt-4">
               <h3 className="text-sm font-medium text-gray-900">Couleurs disponibles</h3>
-              <div className="mt-2 grid grid-cols-6 gap-2">
+              <div className="mt-2 grid grid-cols-3 gap-4">
                 {product.colorVariations.map((variation) => {
                   const colorObj = COLOR_PALETTE.find(c => c.name === variation.color);
                   const isSelected = selectedColors.some(c => c.color === variation.color);
@@ -227,7 +227,7 @@ export default function ProductPage() {
                         type="button"
                         onClick={() => handleColorSelect(variation.color)}
                         disabled={variation.stock === 0}
-                        className={`w-10 h-10 rounded-full border-2 transition-all ${
+                        className={`w-12 h-12 rounded-full border-2 transition-all ${
                           isSelected
                             ? 'border-blue-500 scale-110'
                             : 'border-gray-200 hover:border-gray-300'
@@ -236,28 +236,31 @@ export default function ProductPage() {
                         title={`${variation.color} - Stock: ${variation.stock}`}
                       />
                       {isSelected && (
-                        <div className="flex items-center border border-gray-300 rounded-lg">
-                          <button
-                            onClick={() => {
-                              const currentQuantity = selectedColors.find(c => c.color === variation.color)?.quantity || 1;
-                              updateColorQuantity(variation.color, Math.max(1, currentQuantity - 1));
-                            }}
-                            className="px-2 py-1 text-gray-600 hover:bg-gray-100"
-                          >
-                            -
-                          </button>
-                          <span className="px-2 py-1 text-gray-900">
-                            {selectedColors.find(c => c.color === variation.color)?.quantity || 1}
-                          </span>
-                          <button
-                            onClick={() => {
-                              const currentQuantity = selectedColors.find(c => c.color === variation.color)?.quantity || 1;
-                              updateColorQuantity(variation.color, Math.min(variation.stock, currentQuantity + 1));
-                            }}
-                            className="px-2 py-1 text-gray-600 hover:bg-gray-100"
-                          >
-                            +
-                          </button>
+                        <div className="flex flex-col items-center gap-1 w-full">
+                          <span className="text-xs text-gray-500">{variation.color}</span>
+                          <div className="flex items-center justify-center w-full border border-gray-300 rounded-lg">
+                            <button
+                              onClick={() => {
+                                const currentQuantity = selectedColors.find(c => c.color === variation.color)?.quantity || 1;
+                                updateColorQuantity(variation.color, Math.max(1, currentQuantity - 1));
+                              }}
+                              className="w-10 h-10 text-gray-600 hover:bg-gray-100 flex items-center justify-center"
+                            >
+                              <span className="text-lg font-medium">−</span>
+                            </button>
+                            <span className="px-3 py-1.5 text-gray-900 min-w-[2.5rem] text-center">
+                              {selectedColors.find(c => c.color === variation.color)?.quantity || 1}
+                            </span>
+                            <button
+                              onClick={() => {
+                                const currentQuantity = selectedColors.find(c => c.color === variation.color)?.quantity || 1;
+                                updateColorQuantity(variation.color, Math.min(variation.stock, currentQuantity + 1));
+                              }}
+                              className="w-10 h-10 text-gray-600 hover:bg-gray-100 flex items-center justify-center"
+                            >
+                              <span className="text-lg font-medium">+</span>
+                            </button>
+                          </div>
                         </div>
                       )}
                     </div>
