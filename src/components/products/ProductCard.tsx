@@ -3,9 +3,8 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ShoppingCartIcon, HeartIcon } from '@heroicons/react/24/outline';
+import { HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
-import { useCart } from '@/context/CartContext';
 
 interface Product {
   _id: string;
@@ -24,13 +23,6 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
-  const { addToCart } = useCart();
-
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    addToCart(product);
-  };
 
   const toggleFavorite = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -88,16 +80,9 @@ export default function ProductCard({ product }: ProductCardProps) {
             {parseFloat(product.price.toFixed(3))} DT
           </span>
           <button
-            onClick={handleAddToCart}
-            disabled={product.stock === 0}
-            className={`flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-              product.stock === 0
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                : 'bg-[#fc6f03] text-white hover:bg-[#e56500]'
-            }`}
+            className="px-3 py-1.5 rounded-lg text-sm font-medium text-white bg-[#fc6f03] hover:bg-[#e56500] transition-colors"
           >
-            <ShoppingCartIcon className="h-4 w-4" />
-            Ajouter
+            Voir détails
           </button>
         </div>
 
