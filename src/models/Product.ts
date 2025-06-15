@@ -1,34 +1,49 @@
 import mongoose from 'mongoose';
 
-const productSchema = new mongoose.Schema({
-  name: {
+const colorVariationSchema = new mongoose.Schema({
+  color: {
     type: String,
-    required: [true, 'Le nom du produit est requis'],
-    trim: true,
-  },
-  description: {
-    type: String,
-    default: '',
-    required: false,
-  },
-  price: {
-    type: Number,
-    required: [true, 'Le prix du produit est requis'],
-    min: [0, 'Le prix ne peut pas être négatif'],
-  },
-  image: {
-    type: String,
-    required: [true, 'L\'image du produit est requise'],
-  },
-  category: {
-    type: String,
-    required: [true, 'La catégorie du produit est requise'],
+    required: true,
   },
   stock: {
     type: Number,
-    required: [true, 'Le stock du produit est requis'],
-    min: [0, 'Le stock ne peut pas être négatif'],
+    required: true,
+    min: 0,
   },
+});
+
+const productSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  price: {
+    type: Number,
+    required: true,
+    min: 0,
+  },
+  image: {
+    type: String,
+    required: true,
+  },
+  category: {
+    type: String,
+    required: true,
+  },
+  stock: {
+    type: Number,
+    required: true,
+    min: 0,
+  },
+  hasColorVariations: {
+    type: Boolean,
+    default: false,
+  },
+  colorVariations: [colorVariationSchema],
   isActive: {
     type: Boolean,
     default: true,

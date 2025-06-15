@@ -12,6 +12,7 @@ interface Order {
     name: string;
     price: number;
     quantity: number;
+    selectedColor?: string;
   }>;
   totalPrice: number;
   shippingAddress: {
@@ -130,7 +131,19 @@ export default function CheckoutSuccessPage() {
                     <div className="space-y-3">
                       {order.items.map((item, index) => (
                         <div key={index} className="flex justify-between items-center">
-                          <span className="text-gray-600">{item.name} x {item.quantity}</span>
+                          <span className="text-gray-600">
+                            {item.name} x {item.quantity}
+                            {item.selectedColor && (
+                              <span className="ml-2 inline-flex items-center">
+                                <span className="mr-1">•</span>
+                                <span 
+                                  className="inline-block w-3 h-3 rounded-full mr-1"
+                                  style={{ backgroundColor: item.selectedColor }}
+                                />
+                                {item.selectedColor}
+                              </span>
+                            )}
+                          </span>
                           <span className="font-medium">{parseFloat(item.price.toFixed(2))} TND</span>
                         </div>
                       ))}

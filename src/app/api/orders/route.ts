@@ -1,90 +1,113 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import connectDB from '@/lib/mongodb';
-import Order from '@/models/Order';
 import { authOptions } from '@/lib/auth';
+import Order from '@/models/Order';
+import connectDB from '@/lib/mongodb';
 
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     const body = await request.json();
 
-    const {
-      items,
-      totalPrice,
-      fullName,
-      email,
-      phone,
-      address,
-      city,
-      postalCode,
-      governorate,
-      notes,
-    } = body;
+    // Validate required fields
+    const requiredFields = [
+      'items',
+      'totalPrice',
+      'shippingAddress',
+    ];
 
-    if (!items || !totalPrice || !fullName || !email || !phone || !address || !city || !postalCode || !governorate) {
+    for (const field of requiredFields) {
+      if (!body[field]) {
+        return NextResponse.json(
+          { message: `Le champ ${field} est requis` },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Validate items
+    if (!Array.isArray(body.items) || body.items.length === 0) {
       return NextResponse.json(
-        { error: 'Tous les champs requis doivent être remplis' },
+        { message: 'Le panier est vide' },
         { status: 400 }
       );
+    }
+
+    // Validate each item
+    for (const item of body.items) {
+      if (!item.name || !item.price || !item.quantity) {
+        return NextResponse.json(
+          { message: 'Informations de produit invalides' },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Validate shipping address
+    const requiredAddressFields = [
+      'fullName',
+      'email',
+      'phone',
+      'address',
+      'city',
+      'postalCode',
+      'governorate',
+    ];
+
+    for (const field of requiredAddressFields) {
+      if (!body.shippingAddress[field]) {
+        return NextResponse.json(
+          { message: `L'adresse de livraison est incomplète` },
+          { status: 400 }
+        );
+      }
     }
 
     await connectDB();
 
-    // Create order data object
     const orderData = {
-      items,
-      totalPrice,
-      shippingAddress: {
-        fullName,
-        email,
-        phone,
-        address,
-        city,
-        postalCode,
-        governorate,
-      },
-      notes,
-      paymentMethod: 'cash',
+      userId: session?.user?.id || null,
+      items: body.items.map((item: any) => ({
+        productId: item._id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        selectedColor: item.selectedColor,
+      })),
+      totalPrice: body.totalPrice,
+      shippingAddress: body.shippingAddress,
       status: 'en_attente',
+      statusHistory: [
+        {
+          status: 'en_attente',
+          timestamp: new Date(),
+          updatedBy: session?.user?.id || 'system',
+        },
+      ],
     };
-
-    // Only add userId if user is authenticated
-    if (session?.user?.id) {
-      Object.assign(orderData, { userId: session.user.id });
-    }
 
     const order = await Order.create(orderData);
 
-    return NextResponse.json({
-      message: 'Commande créée avec succès',
-      orderId: order._id,
-    });
+    return NextResponse.json(
+      { message: 'Commande créée avec succès', orderId: order._id },
+      { status: 201 }
+    );
   } catch (error) {
     console.error('Error creating order:', error);
-    
-    // Handle validation errors
-    if (error instanceof Error && error.name === 'ValidationError') {
-      return NextResponse.json(
-        { error: 'Erreur de validation des données' },
-        { status: 400 }
-      );
-    }
-
     return NextResponse.json(
-      { error: 'Erreur serveur' },
+      { message: 'Erreur lors de la création de la commande' },
       { status: 500 }
     );
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
       return NextResponse.json(
-        { error: 'Non autorisé' },
+        { message: 'Non autorisé' },
         { status: 401 }
       );
     }
@@ -93,13 +116,13 @@ export async function GET() {
 
     const orders = await Order.find({ userId: session.user.id })
       .sort({ createdAt: -1 })
-      .select('-__v');
+      .lean();
 
     return NextResponse.json(orders);
   } catch (error) {
     console.error('Error fetching orders:', error);
     return NextResponse.json(
-      { error: 'Erreur serveur' },
+      { message: 'Erreur lors de la récupération des commandes' },
       { status: 500 }
     );
   }

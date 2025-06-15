@@ -48,7 +48,7 @@ export default function CartPage() {
           <div className="space-y-4">
             {items.map((item) => (
               <div
-                key={item._id}
+                key={`${item._id}-${item.selectedColor || 'default'}`}
                 className="flex items-center gap-4 bg-white p-4 rounded-lg shadow-sm"
               >
                 <div className="relative w-16 h-16 sm:w-24 sm:h-24 flex-shrink-0">
@@ -58,19 +58,33 @@ export default function CartPage() {
                     fill
                     className="object-cover rounded-md"
                   />
+                  {item.selectedColor && (
+                    <div
+                      className="absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-white shadow-sm"
+                      style={{ backgroundColor: item.selectedColor }}
+                      title={item.selectedColor}
+                    />
+                  )}
                 </div>
 
                 <div className="flex-grow">
                   <h3 className="text-base sm:text-lg font-medium text-gray-900">
                     {item.name}
                   </h3>
-                  <p className="text-sm sm:text-base text-gray-500">{parseFloat(item.price.toFixed(3))} DT</p>
+                  <p className="text-sm sm:text-base text-gray-500">
+                    {parseFloat(item.price.toFixed(3))} DT
+                  </p>
+                  {item.selectedColor && (
+                    <p className="text-sm text-gray-500">
+                      Couleur: {item.selectedColor}
+                    </p>
+                  )}
                 </div>
 
                 <div className="flex items-center gap-4">
                   <div className="flex items-center border border-gray-300 rounded-lg">
                     <button
-                      onClick={() => updateQuantity(item._id, item.quantity - 1)}
+                      onClick={() => updateQuantity(item._id, item.quantity - 1, item.selectedColor)}
                       className="px-2 sm:px-3 py-0.5 sm:py-1 text-gray-600 hover:bg-gray-100 text-sm sm:text-base"
                       disabled={item.quantity <= 1}
                     >
@@ -80,7 +94,7 @@ export default function CartPage() {
                       {item.quantity}
                     </span>
                     <button
-                      onClick={() => updateQuantity(item._id, item.quantity + 1)}
+                      onClick={() => updateQuantity(item._id, item.quantity + 1, item.selectedColor)}
                       className="px-2 sm:px-3 py-0.5 sm:py-1 text-gray-600 hover:bg-gray-100 text-sm sm:text-base"
                     >
                       +
@@ -88,7 +102,7 @@ export default function CartPage() {
                   </div>
 
                   <button
-                    onClick={() => removeFromCart(item._id)}
+                    onClick={() => removeFromCart(item._id, item.selectedColor)}
                     className="text-gray-400 hover:text-red-500"
                   >
                     <TrashIcon className="h-5 w-5" />
@@ -112,13 +126,13 @@ export default function CartPage() {
                 <span>{parseFloat(totalPrice.toFixed(3))} DT</span>
               </div>
               <div className="flex justify-between text-gray-600">
-                <span>Livraison</span>
-                <span>Gratuite</span>
+                <span>Frais de livraison</span>
+                <span>7.000 DT</span>
               </div>
               <div className="border-t border-gray-200 pt-4">
                 <div className="flex justify-between text-lg font-medium text-gray-900">
                   <span>Total</span>
-                  <span>{parseFloat(totalPrice.toFixed(3))} DT</span>
+                  <span>{parseFloat((totalPrice + 7).toFixed(3))} DT</span>
                 </div>
               </div>
             </div>

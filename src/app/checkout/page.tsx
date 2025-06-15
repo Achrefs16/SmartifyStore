@@ -65,8 +65,17 @@ export default function CheckoutPage() {
         },
         body: JSON.stringify({
           items,
-          totalPrice,
-          ...formData,
+          totalPrice: totalPrice + 7,
+          shippingAddress: {
+            fullName: formData.fullName,
+            email: formData.email,
+            phone: formData.phone,
+            address: formData.address,
+            city: formData.city,
+            postalCode: formData.postalCode,
+            governorate: formData.governorate,
+          },
+          notes: formData.notes,
           userId: session?.user?.id || null,
         }),
       });
@@ -74,7 +83,7 @@ export default function CheckoutPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Une erreur est survenue');
+        throw new Error(data.message || 'Une erreur est survenue');
       }
 
       clearCart();
@@ -168,7 +177,7 @@ export default function CheckoutPage() {
               
               <div className="space-y-6">
                 {items.map((item) => (
-                  <div key={item._id} className="flex items-center gap-4 py-4 border-b border-gray-100 last:border-0">
+                  <div key={`${item._id}-${item.selectedColor}`} className="flex items-center gap-4 py-4 border-b border-gray-100 last:border-0">
                     <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg">
                       <Image
                         src={item.image}
@@ -176,10 +185,23 @@ export default function CheckoutPage() {
                         fill
                         className="object-cover"
                       />
+                      {item.selectedColor && (
+                        <div 
+                          className="absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-white shadow-sm"
+                          style={{ backgroundColor: item.selectedColor }}
+                        />
+                      )}
                     </div>
                     <div className="flex-1">
                       <h3 className="text-base font-medium text-gray-900">{item.name}</h3>
-                      <p className="mt-1 text-sm text-gray-500">Quantité: {item.quantity}</p>
+                      <p className="mt-1 text-sm text-gray-500">
+                        Quantité: {item.quantity}
+                        {item.selectedColor && (
+                          <span className="ml-2">
+                            • Couleur: {item.selectedColor}
+                          </span>
+                        )}
+                      </p>
                     </div>
                     <p className="text-base font-medium text-gray-900">
                       {parseFloat((item.price * item.quantity).toFixed(3))} DT
@@ -193,10 +215,14 @@ export default function CheckoutPage() {
                   <p>Sous-total</p>
                   <p>{parseFloat(totalPrice.toFixed(3))} DT</p>
                 </div>
+                <div className="flex justify-between text-base font-medium text-gray-900">
+                  <p>Frais de livraison</p>
+                  <p>7.000 DT</p>
+                </div>
                 <div className="border-t border-gray-200 pt-4">
                   <div className="flex justify-between text-lg font-bold text-gray-900">
                     <p>Total</p>
-                    <p>{parseFloat(totalPrice.toFixed(3))} DT</p>
+                    <p>{parseFloat((totalPrice + 7).toFixed(3))} DT</p>
                   </div>
                 </div>
               </div>

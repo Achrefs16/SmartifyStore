@@ -8,6 +8,7 @@ interface CartItem {
   price: number;
   image: string;
   quantity: number;
+  selectedColor?: string;
 }
 
 interface Product {
@@ -16,6 +17,7 @@ interface Product {
   price: number;
   image: string;
   quantity?: number;
+  selectedColor?: string;
 }
 
 interface CartContextType {
@@ -23,8 +25,8 @@ interface CartContextType {
   totalItems: number;
   totalPrice: number;
   addToCart: (product: Product) => void;
-  removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  removeFromCart: (productId: string, selectedColor?: string) => void;
+  updateQuantity: (productId: string, quantity: number, selectedColor?: string) => void;
   clearCart: () => void;
 }
 
@@ -62,19 +64,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const addToCart = (product: Product) => {
     setItems((currentItems) => {
-      const existingItem = currentItems.find((item) => item._id === product._id);
+      const existingItem = currentItems.find(
+        (item) => item._id === product._id && item.selectedColor === product.selectedColor
+      );
       let newItems;
 
       if (existingItem) {
-        // If item exists, add the new quantity to the existing quantity
+        // If item exists with the same color, add the new quantity to the existing quantity
         const newQuantity = existingItem.quantity + (product.quantity || 1);
         newItems = currentItems.map((item) =>
-          item._id === product._id
+          item._id === product._id && item.selectedColor === product.selectedColor
             ? { ...item, quantity: newQuantity }
             : item
         );
       } else {
-        // If item doesn't exist, add it with the specified quantity or default to 1
+        // If item doesn't exist or has a different color, add it as a new item
         newItems = [...currentItems, { ...product, quantity: product.quantity || 1 }];
       }
 
@@ -84,21 +88,25 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  const removeFromCart = (productId: string) => {
+  const removeFromCart = (productId: string, selectedColor?: string) => {
     setItems((currentItems) => {
-      const newItems = currentItems.filter((item) => item._id !== productId);
+      const newItems = currentItems.filter(
+        (item) => !(item._id === productId && item.selectedColor === selectedColor)
+      );
       localStorage.setItem('cart', JSON.stringify(newItems));
       updateTotals(newItems);
       return newItems;
     });
   };
 
-  const updateQuantity = (productId: string, quantity: number) => {
+  const updateQuantity = (productId: string, quantity: number, selectedColor?: string) => {
     if (quantity < 1) return;
 
     setItems((currentItems) => {
       const newItems = currentItems.map((item) =>
-        item._id === productId ? { ...item, quantity } : item
+        item._id === productId && item.selectedColor === selectedColor
+          ? { ...item, quantity }
+          : item
       );
       localStorage.setItem('cart', JSON.stringify(newItems));
       updateTotals(newItems);

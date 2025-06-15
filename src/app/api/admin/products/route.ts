@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     console.log('Received product data:', body);
     
-    const { name, price, stock, category, image, description } = body;
+    const { name, price, stock, category, image, description, hasColorVariations, colorVariations } = body;
 
     // Validate all required fields
     if (!name) {
@@ -82,6 +82,8 @@ export async function POST(request: Request) {
       stock: numericStock,
       category,
       image,
+      hasColorVariations: hasColorVariations || false,
+      colorVariations: colorVariations || [],
       isActive: true,
     };
 
@@ -101,6 +103,61 @@ export async function POST(request: Request) {
     }
     return NextResponse.json(
       { error: 'Erreur lors de la création du produit', details: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
+    );
+  }
+}
+
+// PUT update product
+export async function PUT(request: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session || session.user?.role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Non autorisé' },
+        { status: 401 }
+      );
+    }
+
+    const body = await request.json();
+    const { _id, name, price, stock, category, image, description, hasColorVariations, colorVariations } = body;
+
+    if (!_id) {
+      return NextResponse.json({ error: 'ID du produit requis' }, { status: 400 });
+    }
+
+    await connectDB();
+
+    const productData = {
+      name,
+      description: description || '',
+      price: Number(price),
+      stock: Number(stock),
+      category,
+      image,
+      hasColorVariations: hasColorVariations || false,
+      colorVariations: colorVariations || [],
+    };
+
+    const product = await Product.findByIdAndUpdate(
+      _id,
+      { $set: productData },
+      { new: true, runValidators: true }
+    );
+
+    if (!product) {
+      return NextResponse.json(
+        { error: 'Produit non trouvé' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(product);
+  } catch (error) {
+    console.error('Error updating product:', error);
+    return NextResponse.json(
+      { error: 'Erreur lors de la mise à jour du produit' },
       { status: 500 }
     );
   }
