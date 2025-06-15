@@ -7,18 +7,7 @@ import { authOptions } from '@/lib/auth';
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-    console.log('Session:', session); // Debug log
-
-    if (!session?.user?.id) {
-      console.log('No session or user ID found'); // Debug log
-      return NextResponse.json(
-        { error: 'Non autorisé' },
-        { status: 401 }
-      );
-    }
-
     const body = await request.json();
-    console.log('Request body:', body); // Debug log
 
     const {
       items,
@@ -42,10 +31,8 @@ export async function POST(request: Request) {
 
     await connectDB();
 
-    console.log('Creating order with userId:', session.user.id); // Debug log
-
-    const order = await Order.create({
-      userId: session.user.id,
+    // Create order data object
+    const orderData = {
       items,
       totalPrice,
       shippingAddress: {
@@ -58,9 +45,16 @@ export async function POST(request: Request) {
         governorate,
       },
       notes,
-      paymentMethod: 'cash', // Default to cash payment
-      status: 'en_attente', // Changed from paymentStatus to status
-    });
+      paymentMethod: 'cash',
+      status: 'en_attente',
+    };
+
+    // Only add userId if user is authenticated
+    if (session?.user?.id) {
+      Object.assign(orderData, { userId: session.user.id });
+    }
+
+    const order = await Order.create(orderData);
 
     return NextResponse.json({
       message: 'Commande créée avec succès',
@@ -68,6 +62,15 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error('Error creating order:', error);
+    
+    // Handle validation errors
+    if (error instanceof Error && error.name === 'ValidationError') {
+      return NextResponse.json(
+        { error: 'Erreur de validation des données' },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       { error: 'Erreur serveur' },
       { status: 500 }
@@ -78,10 +81,8 @@ export async function POST(request: Request) {
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
-    console.log('Session:', session); // Debug log
 
     if (!session?.user?.id) {
-      console.log('No session or user ID found'); // Debug log
       return NextResponse.json(
         { error: 'Non autorisé' },
         { status: 401 }

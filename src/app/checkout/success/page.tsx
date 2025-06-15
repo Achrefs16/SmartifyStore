@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
 
 interface Order {
   _id: string;
@@ -30,6 +31,7 @@ export default function CheckoutSuccessPage() {
   const searchParams = useSearchParams();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
+  const { data: session } = useSession();
 
   useEffect(() => {
     const orderId = searchParams.get('orderId');
@@ -182,12 +184,21 @@ export default function CheckoutSuccessPage() {
                   >
                     Retour à l&apos;accueil
                   </Link>
-                  <Link
-                    href="/account/profile"
-                    className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200"
-                  >
-                    Voir mes commandes
-                  </Link>
+                  {session ? (
+                    <Link
+                      href="/account/profile"
+                      className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200"
+                    >
+                      Voir mes commandes
+                    </Link>
+                  ) : (
+                    <Link
+                      href="/auth/signup"
+                      className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200"
+                    >
+                      Créer un compte pour suivre vos commandes
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>

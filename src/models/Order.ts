@@ -4,7 +4,8 @@ const orderSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: false,
+    default: null
   },
   items: [{
     name: { type: String, required: true },
@@ -38,6 +39,14 @@ const orderSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
+});
+
+// Add pre-save middleware to ensure userId is null if not provided
+orderSchema.pre('save', function(next) {
+  if (!this.userId) {
+    this.userId = null;
+  }
+  next();
 });
 
 export default mongoose.models.Order || mongoose.model('Order', orderSchema); 
