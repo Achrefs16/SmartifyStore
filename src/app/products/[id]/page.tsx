@@ -14,6 +14,11 @@ interface ColorVariation {
   stock: number;
 }
 
+interface SelectedColor {
+  color: string;
+  quantity: number;
+}
+
 interface Product {
   _id: string;
   name: string;
@@ -49,8 +54,7 @@ export default function ProductPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [quantity, setQuantity] = useState(1);
-  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [selectedColors, setSelectedColors] = useState<SelectedColor[]>([]);
   const [displayImage, setDisplayImage] = useState<string>('');
 
   useEffect(() => {
@@ -77,19 +81,31 @@ export default function ProductPage() {
   const handleAddToCart = () => {
     if (!product) return;
 
-    if (product.hasColorVariations && !selectedColor) {
-      toast.error('Veuillez sélectionner une couleur');
+    if (product.hasColorVariations && selectedColors.length === 0) {
+      toast.error('Veuillez sélectionner au moins une couleur');
       return;
     }
 
-    const cartItem = {
-      ...product,
-      quantity,
-      selectedColor: selectedColor || undefined,
-    };
-
-    addToCart(cartItem);
-    toast.success('Produit ajouté au panier');
+    if (product.hasColorVariations) {
+      // Add each selected color as a separate cart item
+      selectedColors.forEach(({ color, quantity }) => {
+        const cartItem = {
+          ...product,
+          quantity,
+          selectedColor: color,
+        };
+        addToCart(cartItem);
+      });
+    } else {
+      // For products without color variations
+      const cartItem = {
+        ...product,
+        quantity: 1,
+      };
+      addToCart(cartItem);
+    }
+    
+    toast.success('Produit(s) ajouté(s) au panier');
   };
 
   const toggleFavorite = () => {
@@ -97,13 +113,28 @@ export default function ProductPage() {
   };
 
   const handleColorSelect = (color: string) => {
-    setSelectedColor(color);
+    setSelectedColors(prev => {
+      const existing = prev.find(c => c.color === color);
+      if (existing) {
+        // Remove color if already selected
+        return prev.filter(c => c.color !== color);
+      } else {
+        // Add new color with quantity 1
+        return [...prev, { color, quantity: 1 }];
+      }
+    });
   };
 
-  const getAvailableStock = () => {
+  const updateColorQuantity = (color: string, newQuantity: number) => {
+    setSelectedColors(prev => 
+      prev.map(c => c.color === color ? { ...c, quantity: newQuantity } : c)
+    );
+  };
+
+  const getAvailableStock = (color: string) => {
     if (!product) return 0;
     if (!product.hasColorVariations) return product.stock;
-    const variation = product.colorVariations.find(v => v.color === selectedColor);
+    const variation = product.colorVariations.find(v => v.color === color);
     return variation?.stock || 0;
   };
 
@@ -137,7 +168,7 @@ export default function ProductPage() {
     );
   }
 
-  const availableStock = getAvailableStock();
+  const availableStock = getAvailableStock(selectedColors[0]?.color || '');
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -189,26 +220,53 @@ export default function ProductPage() {
               <div className="mt-2 grid grid-cols-6 gap-2">
                 {product.colorVariations.map((variation) => {
                   const colorObj = COLOR_PALETTE.find(c => c.name === variation.color);
+                  const isSelected = selectedColors.some(c => c.color === variation.color);
                   return (
-                    <button
-                      key={variation.color}
-                      type="button"
-                      onClick={() => handleColorSelect(variation.color)}
-                      disabled={variation.stock === 0}
-                      className={`w-10 h-10 rounded-full border-2 transition-all ${
-                        selectedColor === variation.color
-                          ? 'border-blue-500 scale-110'
-                          : 'border-gray-200 hover:border-gray-300'
-                      } ${variation.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      style={{ backgroundColor: colorObj?.value || variation.color }}
-                      title={`${variation.color} - Stock: ${variation.stock}`}
-                    />
+                    <div key={variation.color} className="flex flex-col items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleColorSelect(variation.color)}
+                        disabled={variation.stock === 0}
+                        className={`w-10 h-10 rounded-full border-2 transition-all ${
+                          isSelected
+                            ? 'border-blue-500 scale-110'
+                            : 'border-gray-200 hover:border-gray-300'
+                        } ${variation.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        style={{ backgroundColor: colorObj?.value || variation.color }}
+                        title={`${variation.color} - Stock: ${variation.stock}`}
+                      />
+                      {isSelected && (
+                        <div className="flex items-center border border-gray-300 rounded-lg">
+                          <button
+                            onClick={() => {
+                              const currentQuantity = selectedColors.find(c => c.color === variation.color)?.quantity || 1;
+                              updateColorQuantity(variation.color, Math.max(1, currentQuantity - 1));
+                            }}
+                            className="px-2 py-1 text-gray-600 hover:bg-gray-100"
+                          >
+                            -
+                          </button>
+                          <span className="px-2 py-1 text-gray-900">
+                            {selectedColors.find(c => c.color === variation.color)?.quantity || 1}
+                          </span>
+                          <button
+                            onClick={() => {
+                              const currentQuantity = selectedColors.find(c => c.color === variation.color)?.quantity || 1;
+                              updateColorQuantity(variation.color, Math.min(variation.stock, currentQuantity + 1));
+                            }}
+                            className="px-2 py-1 text-gray-600 hover:bg-gray-100"
+                          >
+                            +
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   );
                 })}
               </div>
-              {selectedColor && (
+              {selectedColors.length > 0 && (
                 <p className="mt-2 text-sm text-gray-500">
-                  Couleur sélectionnée: {selectedColor}
+                  {selectedColors.length} couleur(s) sélectionnée(s)
                 </p>
               )}
             </div>
@@ -222,37 +280,18 @@ export default function ProductPage() {
           </div>
 
           <div className="mb-8">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center border border-gray-300 rounded-lg">
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="px-4 py-2 text-gray-600 hover:bg-gray-100"
-                  disabled={quantity <= 1}
-                >
-                  -
-                </button>
-                <span className="px-4 py-2 text-gray-900">{quantity}</span>
-                <button
-                  onClick={() => setQuantity(Math.min(availableStock, quantity + 1))}
-                  className="px-4 py-2 text-gray-600 hover:bg-gray-100"
-                  disabled={quantity >= availableStock}
-                >
-                  +
-                </button>
-              </div>
-              <button
-                onClick={handleAddToCart}
-                disabled={availableStock === 0}
-                className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-white font-medium transition-colors ${
-                  availableStock === 0
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-[#fc6f03] hover:bg-[#e56500]'
-                }`}
-              >
-                <ShoppingCartIcon className="h-5 w-5" />
-                Ajouter au panier
-              </button>
-            </div>
+            <button
+              onClick={handleAddToCart}
+              disabled={product.hasColorVariations ? selectedColors.length === 0 : product.stock === 0}
+              className={`w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-white font-medium transition-colors ${
+                (product.hasColorVariations ? selectedColors.length === 0 : product.stock === 0)
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-[#fc6f03] hover:bg-[#e56500]'
+              }`}
+            >
+              <ShoppingCartIcon className="h-5 w-5" />
+              Ajouter au panier
+            </button>
           </div>
 
           <div className="border-t border-gray-200 pt-8">
