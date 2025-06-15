@@ -10,6 +10,11 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Smartify Store - Accessoires Intelligents",
   description: "Votre destination pour des accessoires de qualité. Des produits soigneusement sélectionnés pour répondre à tous vos besoins.",
+  icons: {
+    icon: '/images/logo.png',
+    shortcut: '/images/logo.png',
+    apple: '/images/logo.png',
+  },
 };
 
 export default function RootLayout({
