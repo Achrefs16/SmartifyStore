@@ -214,8 +214,16 @@ export default function ProductPage() {
             )}
           </div>
 
+       
+
+          <div className="mb-8">
+            <h2 className="text-lg font-medium text-gray-900 mb-2">
+              Description
+            </h2>
+            <p className="text-gray-600">{product.description}</p>
+          </div>
           {product.hasColorVariations && product.colorVariations && (
-            <div className="mt-4">
+            <div className=" mb-8 mt-4">
               <h3 className="text-sm font-medium text-gray-900">Couleurs disponibles</h3>
               <div className="mt-2 grid grid-cols-3 gap-4">
                 {product.colorVariations.map((variation) => {
@@ -274,14 +282,6 @@ export default function ProductPage() {
               )}
             </div>
           )}
-
-          <div className="mb-8">
-            <h2 className="text-lg font-medium text-gray-900 mb-2">
-              Description
-            </h2>
-            <p className="text-gray-600">{product.description}</p>
-          </div>
-
           <div className="mb-8">
             <button
               onClick={handleAddToCart}
