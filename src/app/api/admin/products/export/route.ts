@@ -18,11 +18,7 @@ const escapeCsvField = (field: string | number | null | undefined): string => {
 
 export async function GET(request: Request) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session || session.user?.role !== 'admin') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // const session = await getServerSession(authOptions);
 
     await connectDB();
     const products = await Product.find({ isActive: true }).sort({ createdAt: -1 });
