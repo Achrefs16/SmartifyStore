@@ -306,12 +306,7 @@ export default function ProductPage() {
                 <dt className="text-gray-600">Catégorie</dt>
                 <dd className="text-gray-900">{product.category}</dd>
               </div>
-              <div className="flex justify-between">
-                <dt className="text-gray-600">Stock</dt>
-                <dd className="text-gray-900">
-                  {availableStock > 0 ? `${availableStock} unités` : 'Rupture de stock'}
-                </dd>
-              </div>
+          
               {product.hasColorVariations && (
                 <div className="flex justify-between">
                   <dt className="text-gray-600">Couleurs</dt>
