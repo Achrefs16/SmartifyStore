@@ -2,14 +2,12 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Product from '@/models/Product';
 
-// Helper function to escape CSV fields
+// Escape CSV fields safely
 const escapeCsvField = (field: string | number | null | undefined): string => {
-  if (field === null || field === undefined) {
-    return '""';
-  }
-  const stringField = String(field);
-  if (stringField.includes(',') || stringField.includes('"') || stringField.includes('\\n')) {
-    return `"${stringField.replace(/"/g, '""')}"`;
+  if (field === null || field === undefined) return '""';
+  const stringField = String(field).replace(/\r?\n|\r/g, ' '); // remove line breaks
+  if (stringField.includes(',') || stringField.includes('"')) {
+    return `"${stringField.replace(/"/g, '""')}"`; // escape quotes
   }
   return stringField;
 };
@@ -18,7 +16,6 @@ export async function GET(request: Request) {
   try {
     await connectDB();
     const products = await Product.find({ isActive: true }).sort({ createdAt: -1 });
-
     const { origin } = new URL(request.url);
 
     const headers = [
@@ -35,55 +32,53 @@ export async function GET(request: Request) {
       'color',
     ];
 
-    let csvContent = headers.join(',') + '\\n';
+    let csvContent = headers.join(',') + '\n';
 
     for (const product of products) {
       if (product.hasColorVariations && product.colorVariations.length > 0) {
         const itemGroupId = product._id.toString();
-        
         product.colorVariations.forEach((variation: { color: string; stock: number }) => {
-          const variationId = `${itemGroupId}-${variation.color.replace(/\\s+/g, '-').toLowerCase()}`;
+          const variationId = `${itemGroupId}-${variation.color.replace(/\s+/g, '-').toLowerCase()}`;
           const row = [
-            escapeCsvField(variationId), // id
-            escapeCsvField(product.name), // title
-            escapeCsvField(product.description), // description
-            escapeCsvField(variation.stock > 0 ? 'in stock' : 'out of stock'), // availability
-            escapeCsvField('new'), // condition
-            escapeCsvField(`${product.price} TND`), // price
-            escapeCsvField(`${origin}/products/${product._id}`), // link
-            escapeCsvField(product.image), // image_link
-            escapeCsvField('smartifystore'), // brand
-            escapeCsvField(itemGroupId), // item_group_id
-            escapeCsvField(variation.color), // color
+            escapeCsvField(variationId),
+            escapeCsvField(product.name),
+            escapeCsvField(product.description),
+            escapeCsvField(variation.stock > 0 ? 'in stock' : 'out of stock'),
+            escapeCsvField('new'),
+            escapeCsvField(`${product.price} TND`),
+            escapeCsvField(`${origin}/products/${product._id}`),
+            escapeCsvField(product.image),
+            escapeCsvField('smartifystore'),
+            escapeCsvField(itemGroupId),
+            escapeCsvField(variation.color),
           ];
-          csvContent += row.join(',') + '\\n';
+          csvContent += row.join(',') + '\n';
         });
       } else {
         const row = [
-          escapeCsvField(product._id.toString()), // id
-          escapeCsvField(product.name), // title
-          escapeCsvField(product.description), // description
-          escapeCsvField(product.stock > 0 ? 'in stock' : 'out of stock'), // availability
-          escapeCsvField('new'), // condition
-          escapeCsvField(`${product.price} TND`), // price
-          escapeCsvField(`${origin}/products/${product._id}`), // link
-          escapeCsvField(product.image), // image_link
-          escapeCsvField('smartifystore'), // brand
-          '', // item_group_id
-          '', // color
+          escapeCsvField(product._id.toString()),
+          escapeCsvField(product.name),
+          escapeCsvField(product.description),
+          escapeCsvField(product.stock > 0 ? 'in stock' : 'out of stock'),
+          escapeCsvField('new'),
+          escapeCsvField(`${product.price} TND`),
+          escapeCsvField(`${origin}/products/${product._id}`),
+          escapeCsvField(product.image),
+          escapeCsvField('smartifystore'),
+          '',
+          '',
         ];
-        csvContent += row.join(',') + '\\n';
+        csvContent += row.join(',') + '\n';
       }
     }
 
     return new NextResponse(csvContent, {
       status: 200,
       headers: {
-        'Content-Type': 'text/csv',
+        'Content-Type': 'text/csv; charset=utf-8',
         'Content-Disposition': 'attachment; filename="facebook_product_catalog.csv"',
       },
     });
-
   } catch (error) {
     console.error('Error generating Facebook product catalog:', error);
     return NextResponse.json(
@@ -91,4 +86,4 @@ export async function GET(request: Request) {
       { status: 500 }
     );
   }
-} 
+}
