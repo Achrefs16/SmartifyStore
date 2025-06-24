@@ -5,7 +5,7 @@ import Product from '@/models/Product';
 import { authOptions } from '@/lib/auth';
 
 // Helper function to escape CSV fields
-const escapeCsvField = (field: any): string => {
+const escapeCsvField = (field: string | number | null | undefined): string => {
   if (field === null || field === undefined) {
     return '""';
   }
@@ -49,7 +49,7 @@ export async function GET(request: Request) {
       if (product.hasColorVariations && product.colorVariations.length > 0) {
         const itemGroupId = product._id.toString();
         
-        product.colorVariations.forEach((variation: any) => {
+        product.colorVariations.forEach((variation: { color: string; stock: number }) => {
           const variationId = `${itemGroupId}-${variation.color.replace(/\\s+/g, '-').toLowerCase()}`;
           const row = [
             escapeCsvField(variationId), // id
