@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
 import connectDB from '@/lib/mongodb';
 import Product from '@/models/Product';
-import { authOptions } from '@/lib/auth';
 
 // Helper function to escape CSV fields
 const escapeCsvField = (field: string | number | null | undefined): string => {
@@ -18,8 +16,6 @@ const escapeCsvField = (field: string | number | null | undefined): string => {
 
 export async function GET(request: Request) {
   try {
-    // const session = await getServerSession(authOptions);
-
     await connectDB();
     const products = await Product.find({ isActive: true }).sort({ createdAt: -1 });
 
