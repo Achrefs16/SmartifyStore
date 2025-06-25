@@ -60,7 +60,6 @@ export default function Hero() {
       prevCurrent.current = current;
       return () => clearTimeout(timeout);
     }
-    // eslint-disable-next-line
   }, [current]);
 
   const handleImgError = (idx: number) => {

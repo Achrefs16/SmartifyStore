@@ -10,7 +10,7 @@ export async function GET() {
     await connectDB();
     const categories = await Category.find().sort({ name: 1 });
     return NextResponse.json(categories);
-  } catch (error) {
+  } catch (_) {
     return NextResponse.json({ error: 'Erreur lors de la récupération des catégories' }, { status: 500 });
   }
 }
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     }
     const category = await Category.create({ name: name.trim() });
     return NextResponse.json(category, { status: 201 });
-  } catch (error) {
+  } catch (_) {
     return NextResponse.json({ error: 'Erreur lors de la création de la catégorie' }, { status: 500 });
   }
 } 

@@ -3,7 +3,6 @@ import { getServerSession } from 'next-auth';
 import connectDB from '@/lib/mongodb';
 import Product from '@/models/Product';
 import { authOptions } from '@/lib/auth';
-import Category from '@/models/Category';
 
 // GET all products
 export async function GET() {

@@ -3,6 +3,11 @@ import type { NextRequest } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Product from '@/models/Product';
 
+interface ProductFilter {
+  category?: string | { $ne: string };
+  _id?: { $ne: string };
+}
+
 export async function GET(request: NextRequest) {
   try {
     await connectDB();
@@ -34,8 +39,8 @@ export async function GET(request: NextRequest) {
 
     // If only category is provided
     if (category) {
-      const filter: any = { category };
-      if (exclude) (filter as any)._id = { $ne: exclude };
+      const filter: ProductFilter = { category };
+      if (exclude) filter._id = { $ne: exclude };
       let query = Product.find(filter).sort({ createdAt: -1 });
       if (limit) query = query.limit(limit);
       const products = await query.lean();
@@ -44,8 +49,8 @@ export async function GET(request: NextRequest) {
 
     // If only notCategory is provided
     if (notCategory) {
-      const filter: any = { category: { $ne: notCategory } };
-      if (exclude) (filter as any)._id = { $ne: exclude };
+      const filter: ProductFilter = { category: { $ne: notCategory } };
+      if (exclude) filter._id = { $ne: exclude };
       let query = Product.find(filter).sort({ createdAt: -1 });
       if (limit) query = query.limit(limit);
       const products = await query.lean();
@@ -53,8 +58,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Default: return all products (optionally excluding one)
-    const filter: any = {};
-    if (exclude) (filter as any)._id = { $ne: exclude };
+    const filter: ProductFilter = {};
+    if (exclude) filter._id = { $ne: exclude };
     let query = Product.find(filter).sort({ createdAt: -1 });
     if (limit) query = query.limit(limit);
     const products = await query.lean();
