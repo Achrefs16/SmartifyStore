@@ -31,7 +31,7 @@ export default function ProductsPage() {
           const data = await res.json();
           setCategories(data);
         }
-      } catch (_) {
+      } catch {
         // ignore
       }
     };

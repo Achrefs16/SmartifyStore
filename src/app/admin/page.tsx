@@ -425,7 +425,7 @@ export default function AdminDashboard() {
         const err = await res.json();
         toast.error(err.error || 'Erreur lors de l\'ajout');
       }
-    } catch (_) {
+    } catch {
       toast.error('Erreur lors de l\'ajout');
     } finally {
       setIsAddingCategory(false);
@@ -495,7 +495,7 @@ export default function AdminDashboard() {
           const data = await res.json();
           setCategories(data);
         }
-      } catch (_) {
+      } catch {
         // ignore
       }
     };
