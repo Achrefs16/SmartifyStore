@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import ProductGrid from '@/components/products/ProductGrid';
 import { FunnelIcon, AdjustmentsHorizontalIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { categories } from '@/config/categories';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 const sortOptions = [
   { label: 'Plus récents', value: 'newest' },
@@ -13,11 +13,41 @@ const sortOptions = [
 ];
 
 export default function ProductsPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState('Tous');
   const [sortBy, setSortBy] = useState('newest');
   const [showFilters, setShowFilters] = useState(false);
   const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
   const [isLoading, setIsLoading] = useState(true);
+  const [categories, setCategories] = useState<{ name: string }[]>([]);
+
+  // Fetch categories from API
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch('/api/admin/categories');
+        if (res.ok) {
+          const data = await res.json();
+          setCategories(data);
+        }
+      } catch (e) {
+        // ignore
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  // Set selectedCategory from URL on load and when URL changes
+  useEffect(() => {
+    if (categories.length === 0) return;
+    const urlCategory = searchParams.get('category');
+    if (urlCategory && categories.some(c => c.name === urlCategory)) {
+      setSelectedCategory(urlCategory);
+    } else {
+      setSelectedCategory('Tous');
+    }
+  }, [searchParams, categories]);
 
   // Simulate loading state
   useEffect(() => {
@@ -26,6 +56,16 @@ export default function ProductsPage() {
     }, 1000);
     return () => clearTimeout(timer);
   }, []);
+
+  // When user clicks a category, update state and URL
+  const handleCategoryClick = (category: string) => {
+    setSelectedCategory(category);
+    if (category === 'Tous') {
+      router.push('/products');
+    } else {
+      router.push(`/products?category=${encodeURIComponent(category)}`);
+    }
+  };
 
   const handlePriceChange = (type: 'min' | 'max', value: string) => {
     const numValue = Number(value);
@@ -74,7 +114,7 @@ export default function ProductsPage() {
                 </h3>
                 <div className="space-y-2">
                   <button
-                    onClick={() => setSelectedCategory('Tous')}
+                    onClick={() => handleCategoryClick('Tous')}
                     className={`block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors duration-200 ${
                       selectedCategory === 'Tous'
                         ? 'bg-[#fc6f03]/10 text-[#fc6f03] font-medium'
@@ -85,10 +125,10 @@ export default function ProductsPage() {
                   </button>
                   {categories.map((category) => (
                     <button
-                      key={category.id}
-                      onClick={() => setSelectedCategory(category.id)}
+                      key={category.name}
+                      onClick={() => handleCategoryClick(category.name)}
                       className={`block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors duration-200 ${
-                        selectedCategory === category.id
+                        selectedCategory === category.name
                           ? 'bg-[#fc6f03]/10 text-[#fc6f03] font-medium'
                           : 'text-gray-600 hover:bg-gray-50'
                       }`}
@@ -158,7 +198,7 @@ export default function ProductsPage() {
               <p className="text-sm text-gray-500">
                 {selectedCategory !== 'Tous' && (
                   <span className="font-medium">
-                    {categories.find((c) => c.id === selectedCategory)?.name}
+                    {categories.find((c) => c.name === selectedCategory)?.name}
                   </span>
                 )}{' '}
                 produits

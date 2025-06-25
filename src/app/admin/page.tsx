@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
-import { categories } from '@/config/categories';
 import Image from 'next/image';
 
 interface Order {
@@ -151,6 +150,9 @@ export default function AdminDashboard() {
   const [isUploading, setIsUploading] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [categories, setCategories] = useState<{ _id: string; name: string }[]>([]);
+  const [newCategory, setNewCategory] = useState('');
+  const [isAddingCategory, setIsAddingCategory] = useState(false);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -404,6 +406,32 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleAddCategory = async () => {
+    if (!newCategory.trim()) return;
+    setIsAddingCategory(true);
+    try {
+      const res = await fetch('/api/admin/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newCategory }),
+      });
+      if (res.ok) {
+        const cat = await res.json();
+        setCategories((prev) => [...prev, cat]);
+        setProductFormData((prev) => ({ ...prev, category: cat.name }));
+        setNewCategory('');
+        toast.success('Catégorie ajoutée');
+      } else {
+        const err = await res.json();
+        toast.error(err.error || 'Erreur lors de l\'ajout');
+      }
+    } catch (e) {
+      toast.error('Erreur lors de l\'ajout');
+    } finally {
+      setIsAddingCategory(false);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -458,6 +486,21 @@ export default function AdminDashboard() {
 
     fetchData();
   }, [session, status, router]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch('/api/admin/categories');
+        if (res.ok) {
+          const data = await res.json();
+          setCategories(data);
+        }
+      } catch (e) {
+        // ignore
+      }
+    };
+    fetchCategories();
+  }, []);
 
   if (isLoading) {
     return (
@@ -966,20 +1009,37 @@ export default function AdminDashboard() {
                           <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
                             Catégorie
                           </label>
-                          <select
-                            id="category"
-                            value={productFormData.category}
-                            onChange={(e) => setProductFormData({ ...productFormData, category: e.target.value })}
-                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                            required
-                          >
-                            <option value="">Sélectionner une catégorie</option>
-                            {categories.map((category) => (
-                              <option key={category.id} value={category.id}>
-                                {category.name}
-                              </option>
-                            ))}
-                          </select>
+                          <div className="flex flex-col gap-2">
+                            <select
+                              id="category"
+                              value={productFormData.category}
+                              onChange={(e) => setProductFormData({ ...productFormData, category: e.target.value })}
+                              className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                              required
+                            >
+                              <option value="">Sélectionner une catégorie</option>
+                              {categories.map((cat) => (
+                                <option key={cat._id} value={cat.name}>{cat.name}</option>
+                              ))}
+                            </select>
+                            <div className="flex items-center gap-2 border-t pt-2 mt-2">
+                              <input
+                                type="text"
+                                placeholder="Nouvelle catégorie"
+                                value={newCategory}
+                                onChange={(e) => setNewCategory(e.target.value)}
+                                className="flex-1 px-2 py-2 border rounded"
+                              />
+                              <button
+                                type="button"
+                                onClick={handleAddCategory}
+                                disabled={isAddingCategory}
+                                className="px-3 py-2 text-sm bg-gray-100 text-blue-600 rounded border border-blue-200 hover:bg-blue-50 disabled:opacity-50"
+                              >
+                                {isAddingCategory ? 'Ajout...' : 'Ajouter'}
+                              </button>
+                            </div>
+                          </div>
                         </div>
 
                         <div>

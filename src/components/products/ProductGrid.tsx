@@ -49,8 +49,11 @@ export default function ProductGrid({
     fetchProducts();
   }, []);
 
+  const normalize = (str: string) => str.trim().toLowerCase();
   const filteredProducts = products.filter((product) => {
-    const matchesCategory = selectedCategory === 'Tous' || product.category === selectedCategory;
+    const matchesCategory =
+      selectedCategory === 'Tous' ||
+      normalize(product.category) === normalize(selectedCategory);
     const matchesPrice = (!minPrice || product.price >= minPrice) && 
                         (!maxPrice || product.price <= maxPrice);
     return matchesCategory && matchesPrice;

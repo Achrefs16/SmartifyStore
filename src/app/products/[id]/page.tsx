@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { ShoppingCartIcon, HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import React from 'react';
+import Link from 'next/link';
 
 interface ColorVariation {
   color: string;
@@ -56,6 +57,8 @@ export default function ProductPage() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [selectedColors, setSelectedColors] = useState<SelectedColor[]>([]);
   const [displayImage, setDisplayImage] = useState<string>('');
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [otherProducts, setOtherProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -77,6 +80,24 @@ export default function ProductPage() {
 
     fetchProduct();
   }, [productId]);
+
+  // Fetch related and other products after loading the product
+  useEffect(() => {
+    if (!product) return;
+    const fetchSuggestions = async () => {
+      try {
+        // Fetch 2 from same category (excluding current)
+        const relatedRes = await fetch(`/api/products?category=${encodeURIComponent(product.category)}&exclude=${product._id}&limit=2`);
+        const related = relatedRes.ok ? await relatedRes.json() : [];
+        setRelatedProducts(related);
+        // Fetch 2 from other categories
+        const otherRes = await fetch(`/api/products?notCategory=${encodeURIComponent(product.category)}&exclude=${product._id}&limit=2`);
+        const other = otherRes.ok ? await otherRes.json() : [];
+        setOtherProducts(other);
+      } catch {}
+    };
+    fetchSuggestions();
+  }, [product]);
 
   const handleAddToCart = () => {
     if (!product) return;
@@ -169,6 +190,10 @@ export default function ProductPage() {
   }
 
   const availableStock = getAvailableStock(selectedColors[0]?.color || '');
+
+  const uniqueProducts = [...relatedProducts, ...otherProducts].filter(
+    (p, idx, arr) => arr.findIndex(x => x._id === p._id) === idx
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -317,6 +342,41 @@ export default function ProductPage() {
               )}
             </dl>
           </div>
+
+          {uniqueProducts.length > 0 && (
+            <div className="mt-16">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Vous pourriez aimer</h2>
+              <div className="flex gap-6 overflow-x-auto pb-2">
+                {uniqueProducts.map((p) => (
+                  <Link
+                    key={p._id}
+                    href={`/products/${p._id}`}
+                    className="group w-56 bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow flex-shrink-0 border border-gray-100 hover:border-[#fc6f03]"
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <div className="relative w-full aspect-[4/5] rounded-t-2xl overflow-hidden bg-gray-50">
+                      <Image
+                        src={p.image}
+                        alt={p.name}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        sizes="220px"
+                      />
+                      <span className="absolute top-3 left-3 bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full font-medium shadow-sm">
+                        {p.category}
+                      </span>
+                    </div>
+                    <div className="p-4 flex flex-col gap-1">
+                      <div className="font-semibold text-gray-900 truncate text-base group-hover:text-[#fc6f03] transition-colors">
+                        {p.name}
+                      </div>
+                      <div className="text-[#fc6f03] font-bold text-lg">{parseFloat(p.price.toFixed(2))} DT</div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
