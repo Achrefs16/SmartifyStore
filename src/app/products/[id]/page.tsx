@@ -155,13 +155,6 @@ export default function ProductPage() {
     );
   };
 
-  const getAvailableStock = (color: string) => {
-    if (!product) return 0;
-    if (!product.hasColorVariations) return product.stock;
-    const variation = product.colorVariations.find(v => v.color === color);
-    return variation?.stock || 0;
-  };
-
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
