@@ -58,6 +58,8 @@ interface Product {
   description?: string;
   hasColorVariations: boolean;
   colorVariations: ColorVariation[];
+  oldPrice?: number;
+  discount?: number;
 }
 
 interface ColorVariation {
@@ -74,6 +76,8 @@ interface ProductFormData {
   description?: string;
   hasColorVariations: boolean;
   colorVariations: ColorVariation[];
+  oldPrice?: number;
+  discount?: number;
 }
 
 interface ErrorResponse {
@@ -146,6 +150,8 @@ export default function AdminDashboard() {
     image: '',
     hasColorVariations: false,
     colorVariations: [],
+    oldPrice: undefined,
+    discount: undefined,
   });
   const [isUploading, setIsUploading] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -271,6 +277,8 @@ export default function AdminDashboard() {
         image: '',
         hasColorVariations: false,
         colorVariations: [],
+        oldPrice: undefined,
+        discount: undefined,
       });
     } catch (error) {
       console.error('Error saving product:', error);
@@ -297,6 +305,8 @@ export default function AdminDashboard() {
           stock: variation.stock
         };
       }) || [],
+      oldPrice: product.oldPrice,
+      discount: product.discount,
     });
     setIsProductModalOpen(true);
   };
@@ -895,6 +905,8 @@ export default function AdminDashboard() {
                   image: '',
                   hasColorVariations: false,
                   colorVariations: [],
+                  oldPrice: undefined,
+                  discount: undefined,
                 });
                 setIsProductModalOpen(true);
               }}
@@ -997,11 +1009,60 @@ export default function AdminDashboard() {
                             type="number"
                             id="price"
                             value={productFormData.price}
-                            onChange={(e) => setProductFormData({ ...productFormData, price: parseFloat(e.target.value) })}
+                            onChange={(e) => {
+                              const price = parseFloat(e.target.value);
+                              let discount = productFormData.discount;
+                              if (productFormData.oldPrice && productFormData.oldPrice > price) {
+                                discount = parseFloat(((productFormData.oldPrice - price) / productFormData.oldPrice * 100).toFixed(1));
+                              } else if (productFormData.oldPrice) {
+                                discount = undefined;
+                              }
+                              setProductFormData({ ...productFormData, price, discount });
+                            }}
                             className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
                             min="0"
                             step="0.001"
                             required
+                          />
+                        </div>
+
+                        <div>
+                          <label htmlFor="oldPrice" className="block text-sm font-medium text-gray-700 mb-1">
+                            Ancien prix
+                          </label>
+                          <input
+                            type="number"
+                            id="oldPrice"
+                            value={productFormData.oldPrice ?? ''}
+                            onChange={(e) => {
+                              const oldPrice = e.target.value ? parseFloat(e.target.value) : undefined;
+                              let discount = productFormData.discount;
+                              if (oldPrice && oldPrice > productFormData.price) {
+                                discount = parseFloat(((oldPrice - productFormData.price) / oldPrice * 100).toFixed(1));
+                              } else if (oldPrice) {
+                                discount = undefined;
+                              }
+                              setProductFormData({ ...productFormData, oldPrice, discount });
+                            }}
+                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                            min="0"
+                            step="0.001"
+                          />
+                        </div>
+
+                        <div>
+                          <label htmlFor="discount" className="block text-sm font-medium text-gray-700 mb-1">
+                            Remise (%)
+                          </label>
+                          <input
+                            type="number"
+                            id="discount"
+                            value={productFormData.discount ?? ''}
+                            onChange={(e) => setProductFormData({ ...productFormData, discount: e.target.value ? parseFloat(e.target.value) : undefined })}
+                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                            min="0"
+                            max="100"
+                            step="0.1"
                           />
                         </div>
 

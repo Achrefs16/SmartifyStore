@@ -57,7 +57,7 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json();
-    const { name, price, stock, category, image, description, hasColorVariations, colorVariations } = body;
+    const { name, price, stock, category, image, description, hasColorVariations, colorVariations, oldPrice, discount } = body;
 
     if (!name || !price || !stock || !category || !image) {
       return NextResponse.json({ error: 'Tous les champs sont requis' }, { status: 400 });
@@ -75,6 +75,8 @@ export async function PUT(request: Request) {
         description: description || '',
         hasColorVariations: hasColorVariations || false,
         colorVariations: colorVariations || [],
+        oldPrice,
+        discount,
       },
       { new: true, runValidators: true }
     );

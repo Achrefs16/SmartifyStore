@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://smartify-store.vercel.app/sitemap.xml 

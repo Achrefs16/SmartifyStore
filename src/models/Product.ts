@@ -39,6 +39,17 @@ const productSchema = new mongoose.Schema({
     required: true,
     min: 0,
   },
+  oldPrice: {
+    type: Number,
+    min: 0,
+    default: null,
+  },
+  discount: {
+    type: Number,
+    min: 0,
+    max: 100,
+    default: null,
+  },
   hasColorVariations: {
     type: Boolean,
     default: false,

@@ -1,6 +1,36 @@
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'LocalBusiness',
+            name: 'Smartify Store',
+            image: '/images/logo.png',
+            '@id': 'https://smartify-store.vercel.app/',
+            url: 'https://smartify-store.vercel.app/',
+            address: {
+              '@type': 'PostalAddress',
+              streetAddress: 'Avenue de la Liberté',
+              addressLocality: 'Tunis',
+              addressRegion: 'Tunis',
+              postalCode: '1000',
+              addressCountry: 'TN'
+            },
+            geo: {
+              '@type': 'GeoCoordinates',
+              latitude: 36.8065,
+              longitude: 10.1815
+            },
+            sameAs: [
+              'https://www.facebook.com/profile.php?id=61576986052660',
+              'https://www.instagram.com/smartifystore1/'
+            ]
+          })
+        }}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* About */}
@@ -9,6 +39,9 @@ export default function Footer() {
             <p className="text-gray-400">
               Votre destination pour des accessoires de qualité. Nous proposons une large sélection de produits pour tous vos besoins.
             </p>
+            <address className="not-italic mt-4 text-gray-400 text-sm">
+              Avenue de la Liberté, Tunis 1000, Tunisie
+            </address>
           </div>
 
           {/* Social Media */}

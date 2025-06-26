@@ -9,6 +9,8 @@ import { ShoppingCartIcon, HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import React from 'react';
 import Link from 'next/link';
+import ProductCard from '@/components/products/ProductCard';
+import Head from 'next/head';
 
 interface ColorVariation {
   color: string;
@@ -30,6 +32,8 @@ interface Product {
   stock: number;
   hasColorVariations: boolean;
   colorVariations: ColorVariation[];
+  oldPrice?: number;
+  discount?: number;
 }
 
 const COLOR_PALETTE = [
@@ -195,190 +199,212 @@ export default function ProductPage() {
     (p, idx, arr) => arr.findIndex(x => x._id === p._id) === idx
   );
 
+  // SEO meta tags and JSON-LD
+  const productUrl = `https://smartify-store.vercel.app/products/${product._id}`;
+  const productImage = product.image.startsWith('http') ? product.image : `https://smartify-store.vercel.app${product.image}`;
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    image: [productImage],
+    description: product.description,
+    sku: product._id,
+    brand: {
+      '@type': 'Brand',
+      name: 'Smartify Store'
+    },
+    offers: {
+      '@type': 'Offer',
+      url: productUrl,
+      priceCurrency: 'TND',
+      price: product.price,
+      availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      itemCondition: 'https://schema.org/NewCondition',
+      seller: {
+        '@type': 'Organization',
+        name: 'Smartify Store'
+      }
+    },
+    category: product.category
+  };
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="lg:grid lg:grid-cols-2 lg:gap-x-8">
-        {/* Product Image */}
-        <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-gray-100">
-          <Image
-            src={displayImage}
-            alt={product.name}
-            fill
-            className="object-cover"
-            priority
-          />
-          <button
-            onClick={toggleFavorite}
-            className="absolute top-4 right-4 p-2 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors"
-          >
-            {isFavorite ? (
-              <HeartIconSolid className="h-6 w-6 text-red-500" />
-            ) : (
-              <HeartIcon className="h-6 w-6 text-gray-600" />
-            )}
-          </button>
-        </div>
-
-        {/* Product Info */}
-        <div className="mt-8 lg:mt-0 lg:pl-8">
-          <div className="mb-4">
-            <span className="text-sm text-gray-500">{product.category}</span>
-            <h1 className="text-3xl font-bold text-gray-900 mt-2">
-              {product.name}
-            </h1>
-          </div>
-
-          <div className="mb-6">
-            <span className="text-3xl font-bold text-gray-900">
-              {parseFloat(product.price.toFixed(2))} DT
-            </span>
-            {availableStock > 0 && availableStock <= 5 && (
-              <p className="mt-2 text-sm text-orange-600">
-                Plus que {availableStock} en stock !
-              </p>
-            )}
-          </div>
-
-       
-
-          <div className="mb-8">
-            <h2 className="text-lg font-medium text-gray-900 mb-2">
-              Description
-            </h2>
-            <p className="text-gray-600">{product.description}</p>
-          </div>
-          {product.hasColorVariations && product.colorVariations && (
-            <div className=" mb-8 mt-4">
-              <h3 className="text-sm font-medium text-gray-900">Couleurs disponibles</h3>
-              <div className="mt-2 grid grid-cols-3 gap-4">
-                {product.colorVariations.map((variation) => {
-                  const colorObj = COLOR_PALETTE.find(c => c.name === variation.color);
-                  const isSelected = selectedColors.some(c => c.color === variation.color);
-                  return (
-                    <div key={variation.color} className="flex flex-col items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => handleColorSelect(variation.color)}
-                        disabled={variation.stock === 0}
-                        className={`w-12 h-12 rounded-full border-2 transition-all ${
-                          isSelected
-                            ? 'border-blue-500 scale-110'
-                            : 'border-gray-200 hover:border-gray-300'
-                        } ${variation.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        style={{ backgroundColor: colorObj?.value || variation.color }}
-                        title={`${variation.color} - Stock: ${variation.stock}`}
-                      />
-                      {isSelected && (
-                        <div className="flex flex-col items-center gap-1 w-full">
-                          <span className="text-xs text-gray-500">{variation.color}</span>
-                          <div className="flex items-center justify-center w-full border border-gray-300 rounded-lg">
-                            <button
-                              onClick={() => {
-                                const currentQuantity = selectedColors.find(c => c.color === variation.color)?.quantity || 1;
-                                updateColorQuantity(variation.color, Math.max(1, currentQuantity - 1));
-                              }}
-                              className="w-10 h-10 text-gray-600 hover:bg-gray-100 flex items-center justify-center"
-                            >
-                              <span className="text-lg font-medium">−</span>
-                            </button>
-                            <span className="px-3 py-1.5 text-gray-900 min-w-[2.5rem] text-center">
-                              {selectedColors.find(c => c.color === variation.color)?.quantity || 1}
-                            </span>
-                            <button
-                              onClick={() => {
-                                const currentQuantity = selectedColors.find(c => c.color === variation.color)?.quantity || 1;
-                                updateColorQuantity(variation.color, Math.min(variation.stock, currentQuantity + 1));
-                              }}
-                              className="w-10 h-10 text-gray-600 hover:bg-gray-100 flex items-center justify-center"
-                            >
-                              <span className="text-lg font-medium">+</span>
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-              {selectedColors.length > 0 && (
-                <p className="mt-2 text-sm text-gray-500">
-                  {selectedColors.length} couleur(s) sélectionnée(s)
-                </p>
-              )}
-            </div>
-          )}
-          <div className="mb-8">
+    <>
+      <Head>
+        <title>{`${product.name} | Smartify Store Tunisie`}</title>
+        <meta name="description" content={product.description} />
+        <meta property="og:title" content={`${product.name} | Smartify Store Tunisie`} />
+        <meta property="og:description" content={product.description} />
+        <meta property="og:image" content={productImage} />
+        <meta property="og:url" content={productUrl} />
+        <link rel="canonical" href={productUrl} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
+      </Head>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="lg:grid lg:grid-cols-2 lg:gap-x-8">
+          {/* Product Image */}
+          <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-gray-100">
+            <Image
+              src={displayImage}
+              alt={product.name}
+              fill
+              className="object-cover"
+              priority
+            />
             <button
-              onClick={handleAddToCart}
-              disabled={product.hasColorVariations ? selectedColors.length === 0 : product.stock === 0}
-              className={`w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-white font-medium transition-colors ${
-                (product.hasColorVariations ? selectedColors.length === 0 : product.stock === 0)
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-[#fc6f03] hover:bg-[#e56500]'
-              }`}
+              onClick={toggleFavorite}
+              className="absolute top-4 right-4 p-2 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors"
             >
-              <ShoppingCartIcon className="h-5 w-5" />
-              Ajouter au panier
+              {isFavorite ? (
+                <HeartIconSolid className="h-6 w-6 text-red-500" />
+              ) : (
+                <HeartIcon className="h-6 w-6 text-gray-600" />
+              )}
             </button>
           </div>
 
-          <div className="border-t border-gray-200 pt-8">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">
-              Détails du produit
-            </h2>
-            <dl className="grid grid-cols-1 gap-4">
-              <div className="flex justify-between">
-                <dt className="text-gray-600">Catégorie</dt>
-                <dd className="text-gray-900">{product.category}</dd>
-              </div>
-          
-              {product.hasColorVariations && (
-                <div className="flex justify-between">
-                  <dt className="text-gray-600">Couleurs</dt>
-                  <dd className="text-gray-900">
-                    {product.colorVariations.length} couleurs disponibles
-                  </dd>
-                </div>
-              )}
-            </dl>
-          </div>
-
-          {uniqueProducts.length > 0 && (
-            <div className="mt-16">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Vous pourriez aimer</h2>
-              <div className="flex gap-6 overflow-x-auto pb-2">
-                {uniqueProducts.map((p) => (
-                  <Link
-                    key={p._id}
-                    href={`/products/${p._id}`}
-                    className="group w-56 bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow flex-shrink-0 border border-gray-100 hover:border-[#fc6f03]"
-                    style={{ textDecoration: 'none' }}
-                  >
-                    <div className="relative w-full aspect-[4/5] rounded-t-2xl overflow-hidden bg-gray-50">
-                      <Image
-                        src={p.image}
-                        alt={p.name}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        sizes="220px"
-                      />
-                      <span className="absolute top-3 left-3 bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full font-medium shadow-sm">
-                        {p.category}
-                      </span>
-                    </div>
-                    <div className="p-4 flex flex-col gap-1">
-                      <div className="font-semibold text-gray-900 truncate text-base group-hover:text-[#fc6f03] transition-colors">
-                        {p.name}
-                      </div>
-                      <div className="text-[#fc6f03] font-bold text-lg">{parseFloat(p.price.toFixed(2))} DT</div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+          {/* Product Info */}
+          <div className="mt-8 lg:mt-0 lg:pl-8">
+            <div className="mb-4">
+              <span className="text-sm text-gray-500">{product.category}</span>
+              <h1 className="text-3xl font-bold text-gray-900 mt-2">
+                {product.name}
+              </h1>
             </div>
-          )}
+
+            <div className="mb-6 flex items-center gap-3 flex-wrap">
+              {product.discount && (
+                <span className="bg-black text-white text-xs font-bold px-2 py-1 rounded-full">
+                  {product.discount}% OFF
+                </span>
+              )}
+              <span className="text-3xl font-bold text-gray-900">
+                {parseFloat(product.price.toFixed(2))} DT
+              </span>
+              {product.oldPrice && (
+                <span className="text-lg font-medium text-gray-400 line-through">
+                  {parseFloat(product.oldPrice.toFixed(2))} DT
+                </span>
+              )}
+            </div>
+
+            <div className="mb-8">
+              <h2 className="text-lg font-medium text-gray-900 mb-2">
+                Description
+              </h2>
+              <p className="text-gray-600">{product.description}</p>
+            </div>
+            {product.hasColorVariations && product.colorVariations && (
+              <div className=" mb-8 mt-4">
+                <h3 className="text-sm font-medium text-gray-900">Couleurs disponibles</h3>
+                <div className="mt-2 grid grid-cols-3 gap-4">
+                  {product.colorVariations.map((variation) => {
+                    const colorObj = COLOR_PALETTE.find(c => c.name === variation.color);
+                    const isSelected = selectedColors.some(c => c.color === variation.color);
+                    return (
+                      <div key={variation.color} className="flex flex-col items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => handleColorSelect(variation.color)}
+                          disabled={variation.stock === 0}
+                          className={`w-12 h-12 rounded-full border-2 transition-all ${
+                            isSelected
+                              ? 'border-blue-500 scale-110'
+                              : 'border-gray-200 hover:border-gray-300'
+                          } ${variation.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                          style={{ backgroundColor: colorObj?.value || variation.color }}
+                          title={`${variation.color} - Stock: ${variation.stock}`}
+                        />
+                        {isSelected && (
+                          <div className="flex flex-col items-center gap-1 w-full">
+                            <span className="text-xs text-gray-500">{variation.color}</span>
+                            <div className="flex items-center justify-center w-full border border-gray-300 rounded-lg">
+                              <button
+                                onClick={() => {
+                                  const currentQuantity = selectedColors.find(c => c.color === variation.color)?.quantity || 1;
+                                  updateColorQuantity(variation.color, Math.max(1, currentQuantity - 1));
+                                }}
+                                className="w-10 h-10 text-gray-600 hover:bg-gray-100 flex items-center justify-center"
+                              >
+                                <span className="text-lg font-medium">−</span>
+                              </button>
+                              <span className="px-3 py-1.5 text-gray-900 min-w-[2.5rem] text-center">
+                                {selectedColors.find(c => c.color === variation.color)?.quantity || 1}
+                              </span>
+                              <button
+                                onClick={() => {
+                                  const currentQuantity = selectedColors.find(c => c.color === variation.color)?.quantity || 1;
+                                  updateColorQuantity(variation.color, Math.min(variation.stock, currentQuantity + 1));
+                                }}
+                                className="w-10 h-10 text-gray-600 hover:bg-gray-100 flex items-center justify-center"
+                              >
+                                <span className="text-lg font-medium">+</span>
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+                {selectedColors.length > 0 && (
+                  <p className="mt-2 text-sm text-gray-500">
+                    {selectedColors.length} couleur(s) sélectionnée(s)
+                  </p>
+                )}
+              </div>
+            )}
+            <div className="mb-8">
+              <button
+                onClick={handleAddToCart}
+                disabled={product.hasColorVariations ? selectedColors.length === 0 : product.stock === 0}
+                className={`w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-white font-medium transition-colors ${
+                  (product.hasColorVariations ? selectedColors.length === 0 : product.stock === 0)
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-[#fc6f03] hover:bg-[#e56500]'
+                }`}
+              >
+                <ShoppingCartIcon className="h-5 w-5" />
+                Ajouter au panier
+              </button>
+            </div>
+
+            <div className="border-t border-gray-200 pt-8">
+              <h2 className="text-lg font-medium text-gray-900 mb-4">
+                Détails du produit
+              </h2>
+              <dl className="grid grid-cols-1 gap-4">
+                <div className="flex justify-between">
+                  <dt className="text-gray-600">Catégorie</dt>
+                  <dd className="text-gray-900">{product.category}</dd>
+                </div>
+            
+                {product.hasColorVariations && (
+                  <div className="flex justify-between">
+                    <dt className="text-gray-600">Couleurs</dt>
+                    <dd className="text-gray-900">
+                      {product.colorVariations.length} couleurs disponibles
+                    </dd>
+                  </div>
+                )}
+              </dl>
+            </div>
+
+            {uniqueProducts.length > 0 && (
+              <div className="mt-16">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Vous pourriez aimer</h2>
+                <div className="flex gap-6 overflow-x-auto pb-2">
+                  {uniqueProducts.map((p) => (
+                    <div key={p._id} className="w-56 flex-shrink-0">
+                      <ProductCard product={p} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 } 

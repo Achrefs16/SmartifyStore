@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     console.log('Received product data:', body);
     
-    const { name, price, stock, category, image, description, hasColorVariations, colorVariations } = body;
+    const { name, price, stock, category, image, description, hasColorVariations, colorVariations, oldPrice, discount } = body;
 
     // Validate all required fields
     if (!name) {
@@ -85,6 +85,8 @@ export async function POST(request: Request) {
       hasColorVariations: hasColorVariations || false,
       colorVariations: colorVariations || [],
       isActive: true,
+      oldPrice,
+      discount,
     };
 
     console.log('Creating product with data:', productData);
@@ -121,7 +123,7 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json();
-    const { _id, name, price, stock, category, image, description, hasColorVariations, colorVariations } = body;
+    const { _id, name, price, stock, category, image, description, hasColorVariations, colorVariations, oldPrice, discount } = body;
 
     if (!_id) {
       return NextResponse.json({ error: 'ID du produit requis' }, { status: 400 });
@@ -138,6 +140,8 @@ export async function PUT(request: Request) {
       image,
       hasColorVariations: hasColorVariations || false,
       colorVariations: colorVariations || [],
+      oldPrice,
+      discount,
     };
 
     const product = await Product.findByIdAndUpdate(
