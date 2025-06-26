@@ -8,7 +8,6 @@ import Image from 'next/image';
 import { ShoppingCartIcon, HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import React from 'react';
-import Link from 'next/link';
 import ProductCard from '@/components/products/ProductCard';
 import Head from 'next/head';
 
@@ -192,8 +191,6 @@ export default function ProductPage() {
       </div>
     );
   }
-
-  const availableStock = getAvailableStock(selectedColors[0]?.color || '');
 
   const uniqueProducts = [...relatedProducts, ...otherProducts].filter(
     (p, idx, arr) => arr.findIndex(x => x._id === p._id) === idx

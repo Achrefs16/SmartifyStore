@@ -51,7 +51,7 @@ const CategoryProductRows: FC = () => {
         setProducts(prodData);
         setCategories(catData);
         setLoading(false);
-      } catch (err) {
+      } catch {
         setError('Erreur lors du chargement des produits');
         setLoading(false);
       }

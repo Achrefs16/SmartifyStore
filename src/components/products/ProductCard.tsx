@@ -23,7 +23,6 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
 
   const toggleFavorite = (e: React.MouseEvent) => {
@@ -36,8 +35,6 @@ export default function ProductCard({ product }: ProductCardProps) {
     <Link
       href={`/products/${product._id}`}
       className="group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden w-full max-w-xs sm:max-w-sm mx-auto p-3 sm:p-5 flex flex-col gap-3"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
       style={{ minHeight: '370px' }}
     >
       {/* Favorite Button */}
