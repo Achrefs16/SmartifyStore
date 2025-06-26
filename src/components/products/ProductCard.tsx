@@ -53,7 +53,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       <div className="relative w-full aspect-square mb-2">
         {/* Discount Badge */}
         {product.discount && (
-          <span className="absolute top-3 left-3 bg-[#d946ef] text-white text-xs font-bold px-2 py-1 rounded-full z-10">
+          <span className="absolute top-3 left-3 bg-[#fed7aa] text-black text-xs font-bold px-2 py-1 rounded-full z-10">
             {product.discount}% OFF
           </span>
         )}
