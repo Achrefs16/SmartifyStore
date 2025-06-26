@@ -53,7 +53,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       <div className="relative w-full aspect-square mb-2">
         {/* Discount Badge */}
         {product.discount && (
-          <span className="absolute top-3 left-3 bg-black text-white text-xs font-bold px-2 py-1 rounded-full z-10">
+          <span className="absolute top-3 left-3 bg-[#d946ef] text-white text-xs font-bold px-2 py-1 rounded-full z-10">
             {product.discount}% OFF
           </span>
         )}
@@ -88,7 +88,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
           <hr className="my-4 border-gray-100 w-full" />
           <div className="flex items-center">
-            <button className="w-full flex items-center justify-center gap-2 bg-[#0a1736] hover:bg-[#1a253c] text-white font-semibold py-1.5 rounded-xl text-base transition-colors mt-auto">
+            <button className="w-full flex items-center justify-center gap-2 bg-[#fc6f03] hover:bg-[#e56500] text-white font-semibold py-1.5 rounded-xl text-base transition-colors mt-auto">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L7.5 15.75A2.25 2.25 0 009.664 18h4.672a2.25 2.25 0 002.164-2.25v-.008a2.25 2.25 0 00-2.164-2.242H6.75m0 0L5.106 5.272A1.125 1.125 0 016.21 3.75h11.58a1.125 1.125 0 011.104 1.522l-1.644 4.928a2.25 2.25 0 01-2.164 1.55H8.25" />
               </svg>
